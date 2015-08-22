@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{B4EF46A3-B408-4F3F-AAB9-A7ED5D306A40}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Pagansoft.Option</RootNamespace>
+    <RootNamespace>Pagansoft.Functional</RootNamespace>
     <AssemblyName>Test</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
@@ -31,6 +31,9 @@
     <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="Shouldly">
+      <HintPath>..\packages\Shouldly.2.5.0\lib\net40\Shouldly.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="OptionTest.cs" />
@@ -54,4 +57,10 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
+  <ItemGroup>
+    <ProjectReference Include="..\Option\Option.csproj">
+      <Project>{DFA49133-30FA-45A6-9D98-AA9AC51F2DC8}</Project>
+      <Name>Option</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>
