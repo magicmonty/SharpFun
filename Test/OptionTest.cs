@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using System;
 
-namespace Test
+namespace Pagansoft.Option
 {
 	[TestFixture ()]
 	public class Test
