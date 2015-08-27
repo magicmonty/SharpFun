@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using System;
 using Shouldly;
+using NUnit.Framework.Constraints;
 
 namespace Pagansoft.Functional
 {
@@ -250,6 +251,34 @@ namespace Pagansoft.Functional
         public void Else_Returns_None_For_Option_None()
         {
             Option.None<int>().Else(_ => true).ShouldBe(Option.None<int>());
+        }
+
+        [Test]
+        public void TryMap_Returns_None_If_Transformation_Function_Throws_Exception()
+        {
+            Option.Some(10).TryMap<int, string>(_ => {
+                throw new Exception();
+            }).ShouldBe(Option.None<string>());
+        }
+
+        [Test]
+        public void TryMap_Returns_Some_If_Transformation_Function_Does_Not_Throw_Exception()
+        {
+            Option.Some(10).TryMap<int, string>(_ => "FOO").ShouldBe(Option.Some("FOO"));
+        }
+
+        [Test]
+        public void TryBind_Returns_None_If_Transformation_Function_Throws_Exception()
+        {
+            Option.Some(10).TryBind<int, string>(_ => {
+                throw new Exception();
+            }).ShouldBe(Option.None<string>());
+        }
+
+        [Test]
+        public void TryBind_Returns_Some_If_Transformation_Function_Does_Not_Throw_Exception()
+        {
+            Option.Some(10).TryBind<int, string>(_ => "FOO".AsOption()).ShouldBe(Option.Some("FOO"));
         }
     }
 }

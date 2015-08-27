@@ -115,6 +115,74 @@ namespace Pagansoft.Functional
         /// <summary>
         /// Transforms the value of the input <paramref name="option"/> with the help of 
         /// the <paramref name="transformation"/> function into a new option of type <typeparamref name="TResult" />
+        /// (alias for <see cref="Map"/>
+        /// </summary>
+        /// <param name="option">Option.</param>
+        /// <param name="transformation">The transformation function.</param>
+        /// <typeparam name="TInput">The type of the input option.</typeparam>
+        /// <typeparam name="TResult">The type of the result option.</typeparam>
+        public static Option<TResult> Select<TInput, TResult>(
+            this Option<TInput> option,
+            Func<TInput, TResult> transformation)
+        {
+            Contract.Requires(option != null);
+            Contract.Requires(transformation != null);
+            Contract.Ensures(Contract.Result<Option<TResult>>() != null);
+
+            return option.Map(transformation);
+        }
+
+        /// <summary>
+        /// Transforms the value of the input <paramref name="option"/> with the help of 
+        /// the <paramref name="transformation"/> function into a new option of type <typeparamref name="TResult" />
+        /// If the transformation function throws an exception, a None will be returned
+        /// </summary>
+        /// <param name="option">Option.</param>
+        /// <param name="transformation">The transformation function.</param>
+        /// <typeparam name="TInput">The type of the input option.</typeparam>
+        /// <typeparam name="TResult">The type of the result option.</typeparam>
+        public static Option<TResult> TryMap<TInput, TResult>(
+            this Option<TInput> option,
+            Func<TInput, TResult> transformation)
+        {
+            Contract.Requires(option != null);
+            Contract.Requires(transformation != null);
+            Contract.Ensures(Contract.Result<Option<TResult>>() != null);
+
+            try
+            {
+                return option.Map(transformation);
+            }
+            catch
+            {
+                return Option.None<TResult>();
+            }
+        }
+
+        /// <summary>
+        /// Transforms the value of the input <paramref name="option"/> with the help of 
+        /// the <paramref name="transformation"/> function into a new option of type <typeparamref name="TResult" />
+        /// If the transformation function throws an exception, a None will be returned
+        /// (alias for <see cref="TryMap"/>)
+        /// </summary>
+        /// <param name="option">Option.</param>
+        /// <param name="transformation">The transformation function.</param>
+        /// <typeparam name="TInput">The type of the input option.</typeparam>
+        /// <typeparam name="TResult">The type of the result option.</typeparam>
+        public static Option<TResult> TrySelect<TInput, TResult>(
+            this Option<TInput> option,
+            Func<TInput, TResult> transformation)
+        {
+            Contract.Requires(option != null);
+            Contract.Requires(transformation != null);
+            Contract.Ensures(Contract.Result<Option<TResult>>() != null);
+
+            return option.TryMap(transformation);
+        }
+
+        /// <summary>
+        /// Transforms the value of the input <paramref name="option"/> with the help of 
+        /// the <paramref name="transformation"/> function into a new option of type <typeparamref name="TResult" />
         /// </summary>
         /// <param name="option">Option.</param>
         /// <param name="transformation">The transformation function.</param>
@@ -131,6 +199,33 @@ namespace Pagansoft.Functional
             return option.IsSome
                 ? transformation(option.Value)
                 : Option.None<TResult>();
+        }
+
+        /// <summary>
+        /// Transforms the value of the input <paramref name="option"/> with the help of 
+        /// the <paramref name="transformation"/> function into a new option of type <typeparamref name="TResult" />
+        /// If the transformation function throws an exception, a None will be returned
+        /// </summary>
+        /// <param name="option">Option.</param>
+        /// <param name="transformation">The transformation function.</param>
+        /// <typeparam name="TInput">The type of the input option.</typeparam>
+        /// <typeparam name="TResult">The type of the result option.</typeparam>
+        public static Option<TResult> TryBind<TInput, TResult>(
+            this Option<TInput> option,
+            Func<TInput, Option<TResult>> transformation)
+        {
+            Contract.Requires(option != null);
+            Contract.Requires(transformation != null);
+            Contract.Ensures(Contract.Result<Option<TResult>>() != null);
+
+            try
+            {
+                return option.Bind(transformation);
+            }
+            catch
+            {
+                return Option.None<TResult>();
+            }
         }
 
         /// <summary>
