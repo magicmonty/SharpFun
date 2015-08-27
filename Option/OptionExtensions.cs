@@ -166,6 +166,21 @@ namespace Pagansoft.Functional
                 ? Option.Some<TResult>((TResult)value)
                 : Option.None<TResult>();
         }
+
+        /// <summary>Returns the option if the predicate matches on the value</summary>
+        /// <param name="option">Option.</param>
+        /// <param name="predicate">Predicate.</param>
+        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        public static Option<T> Where<T>(this Option<T> option, Func<T, bool> predicate)
+        {
+            Contract.Requires(option != null);
+            Contract.Requires(predicate != null);
+            Contract.Ensures(Contract.Result<Option<T>>() != null);
+
+            return option.IsSome && predicate(option.Value)
+                ? option
+                : Option.None<T>();
+        }
     }
 }
 

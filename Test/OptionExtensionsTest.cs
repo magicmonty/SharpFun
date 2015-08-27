@@ -179,6 +179,24 @@ namespace Pagansoft.Functional
 
             value.AsOption().ShouldBe(Option.Some(10));
         }
+
+        [Test]
+        public void Where_Returns_Some_For_Option_Some_And_Predicate_True()
+        {
+            Option.Some(10).Where(v => v == 10).ShouldBe(Option.Some(10));
+        }
+
+        [Test]
+        public void Where_Returns_None_For_Option_Some_And_Predicate_False()
+        {
+            Option.Some(10).Where(v => v > 10).ShouldBe(Option.None<int>());
+        }
+
+        [Test]
+        public void Where_Returns_None_For_Option_None()
+        {
+            Option.None<int>().Where(_ => true).ShouldBe(Option.None<int>());
+        }
     }
 }
 
