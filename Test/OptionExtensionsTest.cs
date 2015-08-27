@@ -100,6 +100,22 @@ namespace Pagansoft.Functional
 
             wasExecuted.ShouldBe("FOO was executed");
         }
+
+        [Test]
+        public void Map_Returns_Some_Transformed_Value_If_Option_Has_Value()
+        {
+            var option = Option.Some(1);
+
+            option.Map(v => v + "FOO").ShouldBe(Option.Some("1FOO"));
+        }
+
+        [Test]
+        public void Map_Returns_None_If_Option_Has_No_Value()
+        {
+            var option = Option.None<int>();
+
+            option.Map(v => v + "BAR").ShouldBe(Option.None<string>());
+        }
     }
 }
 

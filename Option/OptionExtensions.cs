@@ -79,6 +79,23 @@ namespace Pagansoft.Functional
                 .Do(someAction)
                 .OtherwiseDo(noneAction);
         }
+
+        /// <summary>
+        /// Transforms the value of the input <paramref name="option"/> with the help of 
+        /// the <paramref name="transformation"/> function into a new option of type <typeparamref name="TResult" />
+        /// </summary>
+        /// <param name="option">Option.</param>
+        /// <param name="transformation">The transformation function.</param>
+        /// <typeparam name="TInput">The type of the input option.</typeparam>
+        /// <typeparam name="TResult">The type of the result option.</typeparam>
+        public static Option<TResult> Map<TInput, TResult>(
+            this Option<TInput> option,
+            Func<TInput, TResult> transformation)
+        {
+            return option.IsSome
+                ? Option.Some<TResult>(transformation(option.Value))    
+                : Option.None<TResult>();
+        }
     }
 }
 
