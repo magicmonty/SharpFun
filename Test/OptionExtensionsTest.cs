@@ -140,6 +140,45 @@ namespace Pagansoft.Functional
 
             option.Bind(v => Option.Some("FOO")).ShouldBe(Option.None<string>());
         }
+
+        [Test]
+        public void AsOption_Returns_None_If_Value_Is_Null()
+        {
+            object value = null;
+
+            value.AsOption().ShouldBe(Option.None<object>());
+        }
+
+        [Test]
+        public void AsOption_Returns_Some_With_Value_If_Value_Is_Not_Null()
+        {
+            const string value = "FOO";
+            value.AsOption().ShouldBe(Option.Some("FOO"));
+        }
+
+        [Test]
+        public void AsOption_Returns_None_If_Nullable_Value_Is_Null()
+        {
+            int? value = null;
+
+            value.AsOption().ShouldBe(Option.None<int>());
+        }
+
+        [Test]
+        public void AsOption_Returns_Some_Value_If_Nullable_Value_Is_Not_Null()
+        {
+            int? value = 10;
+
+            value.AsOption().ShouldBe(Option.Some(10));
+        }
+
+        [Test]
+        public void AsOption_Returns_Some_Value_Is_Value_Type()
+        {
+            const int value = 10;
+
+            value.AsOption().ShouldBe(Option.Some(10));
+        }
     }
 }
 

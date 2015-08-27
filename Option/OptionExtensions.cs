@@ -52,6 +52,10 @@ namespace Pagansoft.Functional
         /// <typeparam name="T">The 1st type parameter.</typeparam>
         public static Option<T> Match<T>(this Option<T> option, Action<T> action)
         {
+            Contract.Requires(option != null);
+            Contract.Requires(action != null);
+            Contract.Ensures(Contract.Result<Option<T>>() != null);
+
             return option.Do(action);
         }
 
@@ -63,6 +67,10 @@ namespace Pagansoft.Functional
         /// <typeparam name="T">The 1st type parameter.</typeparam>
         public static Option<T> Match<T>(this Option<T> option, Action action)
         {
+            Contract.Requires(option != null);
+            Contract.Requires(action != null);
+            Contract.Ensures(Contract.Result<Option<T>>() != null);
+
             return option.OtherwiseDo(action);
         }
 
@@ -75,6 +83,11 @@ namespace Pagansoft.Functional
         /// <typeparam name="T">The 1st type parameter.</typeparam>
         public static Option<T> Match<T>(this Option<T> option, Action<T> someAction, Action noneAction)
         {
+            Contract.Requires(option != null);
+            Contract.Requires(someAction != null);
+            Contract.Requires(noneAction != null);
+            Contract.Ensures(Contract.Result<Option<T>>() != null);
+
             return option
                 .Do(someAction)
                 .OtherwiseDo(noneAction);
@@ -92,9 +105,11 @@ namespace Pagansoft.Functional
             this Option<TInput> option,
             Func<TInput, TResult> transformation)
         {
-            return option.IsSome
-                ? Option.Some<TResult>(transformation(option.Value))
-                : Option.None<TResult>();
+            Contract.Requires(option != null);
+            Contract.Requires(transformation != null);
+            Contract.Ensures(Contract.Result<Option<TResult>>() != null);
+
+            return option.Bind(v => transformation(v).AsOption());
         }
 
         /// <summary>
@@ -109,8 +124,46 @@ namespace Pagansoft.Functional
             this Option<TInput> option,
             Func<TInput, Option<TResult>> transformation)
         {
+            Contract.Requires(option != null);
+            Contract.Requires(transformation != null);
+            Contract.Ensures(Contract.Result<Option<TResult>>() != null);
+
             return option.IsSome
                 ? transformation(option.Value)
+                : Option.None<TResult>();
+        }
+
+        /// <summary>
+        /// Transforms a value into an option.
+        /// If <typeparamref name="TResult"> is a reference type and the value is null,
+        /// then a None will be returned, otherwise a Some
+        /// </summary>
+        /// <param name="value">The value to convert.</param>
+        /// <typeparam name="TResult">The type of the value.</typeparam>
+        /// <returns>The option.</returns>
+        public static Option<TResult> AsOption<TResult>(this TResult value)
+        {
+            Contract.Ensures(Contract.Result<Option<TResult>>() != null);
+
+            return !typeof(TResult).IsValueType && value == null
+                ? Option.None<TResult>()
+                : Option.Some(value);
+        }
+
+        /// <summary>
+        /// Transforms a nullable value into an option.
+        /// If the value is null,
+        /// then a None will be returned, otherwise a Some
+        /// </summary>
+        /// <param name="value">The value to convert.</param>
+        /// <typeparam name="TResult">The type of the value.</typeparam>
+        /// <returns>The option.</returns>
+        public static Option<TResult> AsOption<TResult>(this TResult? value) where TResult : struct
+        {
+            Contract.Ensures(Contract.Result<Option<TResult>>() != null);
+
+            return value.HasValue
+                ? Option.Some<TResult>((TResult)value)
                 : Option.None<TResult>();
         }
     }
