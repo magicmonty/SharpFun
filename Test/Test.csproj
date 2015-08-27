@@ -38,6 +38,7 @@
   <ItemGroup>
     <Compile Include="OptionTest.cs" />
     <Compile Include="OptionExtensionsTest.cs" />
+    <Compile Include="EnumerableWithOptionExtensionsTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
