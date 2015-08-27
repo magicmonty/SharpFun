@@ -60,9 +60,9 @@
     </MonoDevelop>
   </ProjectExtensions>
   <ItemGroup>
-    <ProjectReference Include="..\Option\Option.csproj">
+    <ProjectReference Include="..\Functional\Functional.csproj">
       <Project>{DFA49133-30FA-45A6-9D98-AA9AC51F2DC8}</Project>
-      <Name>Option</Name>
+      <Name>Functional</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>
