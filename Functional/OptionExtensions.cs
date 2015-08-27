@@ -262,6 +262,40 @@ namespace Pagansoft.Functional
                 : Option.None<TResult>();
         }
 
+        /// <summary>
+        /// Transforms a value into an option.
+        /// If <typeparamref name="TResult"> is a reference type and the value is null,
+        /// then a None will be returned, otherwise a Some or a None is returned
+        /// depending of the return value of the predicate
+        /// </summary>
+        /// <param name="value">The value to convert.</param>
+        /// <typeparam name="TResult">The type of the value.</typeparam>
+        /// <returns>The option.</returns>
+        public static Option<TResult> AsOption<TResult>(this TResult value, Func<TResult, bool> predicate)
+        {
+            Contract.Requires(predicate != null);
+            Contract.Ensures(Contract.Result<Option<TResult>>() != null);
+
+            return value.AsOption().Where(predicate);
+        }
+
+        /// <summary>
+        /// Transforms a nullable value into an option.
+        /// If the value is null,
+        /// then a None will be returned, otherwise a Some or a None is returned
+        /// depending of the return value of the predicate
+        /// </summary>
+        /// <param name="value">The value to convert.</param>
+        /// <typeparam name="TResult">The type of the value.</typeparam>
+        /// <returns>The option.</returns>
+        public static Option<TResult> AsOption<TResult>(this TResult? value, Func<TResult, bool> predicate) where TResult : struct
+        {
+            Contract.Requires(predicate != null);
+            Contract.Ensures(Contract.Result<Option<TResult>>() != null);
+
+            return value.AsOption().Where(predicate);
+        }
+
         /// <summary>Returns the option if the predicate matches on the value</summary>
         /// <param name="option">Option.</param>
         /// <param name="predicate">Predicate.</param>

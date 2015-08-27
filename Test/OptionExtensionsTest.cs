@@ -280,6 +280,28 @@ namespace Pagansoft.Functional
         {
             Option.Some(10).TryBind<int, string>(_ => "FOO".AsOption()).ShouldBe(Option.Some("FOO"));
         }
+
+        [Test]
+        public void AsOption_With_Predicate_Is_Composed_Of_AsOption_And_Where()
+        {
+            var intValue = 10;
+            int? nullableIntValue = 10;
+            int? nullableIntValueNull = null;
+            string referenceValue = "FOO";
+            string nullReferenceValue = null;
+
+            intValue.AsOption(v => v == 10).ShouldBe(Option.Some(10));
+            intValue.AsOption(v => v != 10).ShouldBe(Option.None<int>());
+            nullableIntValue.AsOption<int>(v => v == 10).ShouldBe(Option.Some<int>(10));
+            nullableIntValue.AsOption<int>(v => v != 10).ShouldBe(Option.None<int>());
+            nullableIntValueNull.AsOption<int>(_ => true).ShouldBe(Option.None<int>());
+            nullableIntValueNull.AsOption<int>(_ => false).ShouldBe(Option.None<int>());
+            referenceValue.AsOption(_ => true).ShouldBe(Option.Some("FOO"));
+            referenceValue.AsOption(_ => false).ShouldBe(Option.None<string>());
+            nullReferenceValue.AsOption(_ => true).ShouldBe(Option.None<string>());
+            nullReferenceValue.AsOption(_ => false).ShouldBe(Option.None<string>());
+        }
+
     }
 }
 
