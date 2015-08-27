@@ -53,7 +53,7 @@ namespace Pagansoft.Functional
         }
 
         /// <param name="value">Value.</param>
-        public static implicit operator Option<T>(T value) 
+        public static implicit operator Option<T>(T value)
         {
             return ReferenceEquals(null, value)
                 ? Option.None<T>()
@@ -73,11 +73,12 @@ namespace Pagansoft.Functional
             }
 
             public override TResult Value { get { return _value; } }
+
             private readonly TResult _value;
 
             public override bool IsSome { get { return true; } }
 
-            public override TResult ReturnValueOr(TResult defaultValue) 
+            public override TResult ReturnValueOr(TResult defaultValue)
             {
                 return _value;
             }
@@ -97,6 +98,11 @@ namespace Pagansoft.Functional
             {
                 return _value != null ? _value.GetHashCode() : 0;
             }
+
+            public override string ToString()
+            {
+                return _value == null ? "null" : _value.ToString();
+            }
         }
 
         private sealed class None<TResult> : Option<TResult>
@@ -110,20 +116,25 @@ namespace Pagansoft.Functional
                 }
             }
 
-            public override TResult ReturnValueOr(TResult defaultValue) 
+            public override TResult ReturnValueOr(TResult defaultValue)
             {
                 return defaultValue;
             }
 
             public override bool Equals(Option<TResult> other)
             {
-                return !ReferenceEquals(null, other) 
-                    && other.GetType() == this.GetType();
+                return !ReferenceEquals(null, other)
+                && other.GetType() == this.GetType();
             }
 
             public override int GetHashCode()
             {
                 return 0;
+            }
+
+            public override string ToString()
+            {
+                return "None";
             }
         }
 

@@ -77,7 +77,7 @@ namespace Pagansoft.Functional
         }
 
         [Test]
-        public void Option_None_Are_Equal_If_Containing_Type_Is_Same() 
+        public void Option_None_Are_Equal_If_Containing_Type_Is_Same()
         {
             var option1 = Option.None<int>();
             var option2 = Option.None<int>();
@@ -100,7 +100,7 @@ namespace Pagansoft.Functional
         }
 
         [Test]
-        public void Implicit_Conversion_Converts_To_A_Some_Option() 
+        public void Implicit_Conversion_Converts_To_A_Some_Option()
         {
             Option<int> actual = 1;
 
@@ -108,7 +108,7 @@ namespace Pagansoft.Functional
         }
 
         [Test]
-        public void Implicit_Conversion_Of_Null_Converts_To_A_None_Option() 
+        public void Implicit_Conversion_Of_Null_Converts_To_A_None_Option()
         {
             Option<string> actual = (string)null;
 
@@ -125,6 +125,18 @@ namespace Pagansoft.Functional
         public void ReturnValueOr_Of_A_None_Returns_Its_Value()
         {
             Option.None<string>().ReturnValueOr("BAR").ShouldBe("BAR");
+        }
+
+        [Test]
+        public void ToString_Returns_ToString_Of_Value()
+        {
+            Option.Some("FOO").ShouldBe("FOO");
+        }
+
+        [Test]
+        public void ToString_Of_None_Returns_None()
+        {
+            Option.None<int>().ToString().ShouldBe("None");
         }
     }
 }
