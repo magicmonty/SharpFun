@@ -116,6 +116,30 @@ namespace Pagansoft.Functional
 
             option.Map(v => v + "BAR").ShouldBe(Option.None<string>());
         }
+
+        [Test]
+        public void Bind_Returns_Some_Transformed_Value_If_Option_Has_Value_And_Transformation_Function_Returns_Some()
+        {
+            var option = Option.Some(1);
+
+            option.Bind(v => Option.Some("FOO")).ShouldBe(Option.Some("FOO"));
+        }
+
+        [Test]
+        public void Bind_Returns_None_If_Option_Has_Value_And_Transformation_Function_Returns_None()
+        {
+            var option = Option.Some(1);
+
+            option.Bind(v => Option.None<string>()).ShouldBe(Option.None<string>());
+        }
+
+        [Test]
+        public void Bind_Returns_None_If_Option_Has_No_Value()
+        {
+            var option = Option.None<int>();
+
+            option.Bind(v => Option.Some("FOO")).ShouldBe(Option.None<string>());
+        }
     }
 }
 
