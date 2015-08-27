@@ -181,6 +181,47 @@ namespace Pagansoft.Functional
                 ? option
                 : Option.None<T>();
         }
+
+        /// <summary>Returns the option if the predicate matches on the value (alias for <see cref="Where"/>Where>)</summary>
+        /// <param name="option">Option.</param>
+        /// <param name="predicate">Predicate.</param>
+        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        public static Option<T> If<T>(this Option<T> option, Func<T, bool> predicate)
+        {
+            Contract.Requires(option != null);
+            Contract.Requires(predicate != null);
+            Contract.Ensures(Contract.Result<Option<T>>() != null);
+
+            return option.Where(predicate);
+        }
+
+        /// <summary>Returns the option if the predicate didn't match on the value</summary>
+        /// <param name="option">Option.</param>
+        /// <param name="predicate">Predicate.</param>
+        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        public static Option<T> WhereNot<T>(this Option<T> option, Func<T, bool> predicate)
+        {
+            Contract.Requires(option != null);
+            Contract.Requires(predicate != null);
+            Contract.Ensures(Contract.Result<Option<T>>() != null);
+
+            return option.IsSome && !predicate(option.Value)
+                ? option
+                : Option.None<T>();
+        }
+
+        /// <summary>Returns the option if the predicate didn't match on the value (alias for <see cref="WhereNot"/>)</summary>
+        /// <param name="option">Option.</param>
+        /// <param name="predicate">Predicate.</param>
+        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        public static Option<T> Else<T>(this Option<T> option, Func<T, bool> predicate)
+        {
+            Contract.Requires(option != null);
+            Contract.Requires(predicate != null);
+            Contract.Ensures(Contract.Result<Option<T>>() != null);
+
+            return option.WhereNot(predicate);
+        }
     }
 }
 

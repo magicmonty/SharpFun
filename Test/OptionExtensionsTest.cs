@@ -197,6 +197,60 @@ namespace Pagansoft.Functional
         {
             Option.None<int>().Where(_ => true).ShouldBe(Option.None<int>());
         }
+
+        [Test]
+        public void If_Returns_Some_For_Option_Some_And_Predicate_True()
+        {
+            Option.Some(10).If(v => v == 10).ShouldBe(Option.Some(10));
+        }
+
+        [Test]
+        public void If_Returns_None_For_Option_Some_And_Predicate_False()
+        {
+            Option.Some(10).If(v => v > 10).ShouldBe(Option.None<int>());
+        }
+
+        [Test]
+        public void If_Returns_None_For_Option_None()
+        {
+            Option.None<int>().If(_ => true).ShouldBe(Option.None<int>());
+        }
+
+        [Test]
+        public void WhereNot_Returns_Some_For_Option_Some_And_Predicate_False()
+        {
+            Option.Some(5).WhereNot(v => v > 10).ShouldBe(Option.Some(5));
+        }
+
+        [Test]
+        public void WhereNot_Returns_None_For_Option_Some_And_Predicate_True()
+        {
+            Option.Some(11).WhereNot(v => v > 10).ShouldBe(Option.None<int>());
+        }
+
+        [Test]
+        public void WhereNot_Returns_None_For_Option_None()
+        {
+            Option.None<int>().WhereNot(_ => true).ShouldBe(Option.None<int>());
+        }
+
+        [Test]
+        public void Else_Returns_Some_For_Option_Some_And_Predicate_False()
+        {
+            Option.Some(5).Else(v => v > 10).ShouldBe(Option.Some(5));
+        }
+
+        [Test]
+        public void Else_Returns_None_For_Option_Some_And_Predicate_True()
+        {
+            Option.Some(11).Else(v => v > 10).ShouldBe(Option.None<int>());
+        }
+
+        [Test]
+        public void Else_Returns_None_For_Option_None()
+        {
+            Option.None<int>().Else(_ => true).ShouldBe(Option.None<int>());
+        }
     }
 }
 
