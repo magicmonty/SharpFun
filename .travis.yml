@@ -1,0 +1,4 @@
+language: csharp
+solution: PaganSoft.Functional.sln
+script:    # the following commands are just examples, use whatever your build process requires
+  - ./updateAndBuild.sh
