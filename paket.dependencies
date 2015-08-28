@@ -1,3 +1,5 @@
 source https://nuget.org/api/v2
 
 nuget FAKE
+nuget NUnit 2.6.4 framework: >= net45
+nuget Shouldly 2.5.0 framework: >= net45
