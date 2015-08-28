@@ -2,5 +2,6 @@ NUGET
   remote: https://nuget.org/api/v2
   specs:
     FAKE (4.3.1)
-    NUnit (2.6.4) - framework: >= net45
-    Shouldly (2.5.0) - framework: >= net45
+    NUnit (2.6.4)
+    NUnit.Runners (2.6.4)
+    Shouldly (2.5.0)
