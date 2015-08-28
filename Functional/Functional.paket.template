@@ -1,4 +1,5 @@
-type project
+type file
+id Pagansoft.Functional
 authors Martin Gondermann
 owners Martin Gondermann
 projectUrl http://github.com/magicmonty/SharpFun
@@ -6,3 +7,5 @@ licenseUrl https://raw.githubusercontent.com/magicmonty/SharpFun/master/LICENSE.
 tags data type,functional,option
 description
   Functional data types for C#
+files
+  ../build/release/Pagansoft.Functional.dll ==> lib

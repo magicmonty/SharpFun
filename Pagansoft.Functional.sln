@@ -1,4 +1,4 @@
-
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".paket", ".paket", "{AED1088C-8662-4F73-99DB-00F79377BB39}"
@@ -9,6 +9,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Functional", "Functional\Functional.csproj", "{DFA49133-30FA-45A6-9D98-AA9AC51F2DC8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{B4EF46A3-B408-4F3F-AAB9-A7ED5D306A40}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{47FA3375-571A-42D3-B8C9-6104F1D22EEE}"
+	ProjectSection(SolutionItems) = preProject
+		build.fsx = build.fsx
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,6 +28,8 @@ Global
 		{DFA49133-30FA-45A6-9D98-AA9AC51F2DC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DFA49133-30FA-45A6-9D98-AA9AC51F2DC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DFA49133-30FA-45A6-9D98-AA9AC51F2DC8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0
@@ -78,7 +85,7 @@ Global
 		$8.inheritsScope = application/xml
 		$8.scope = application/xml
 		$0.StandardHeader = $9
-		$9.Text =
+		$9.Text = 
 		$9.IncludeInNewFiles = False
 		$0.NameConventionPolicy = $10
 		$10.Rules = $11
