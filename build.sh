@@ -1,2 +1,2 @@
 #!/bin/sh
-mono packages/FAKE/tools/Fake.exe build.fsx
+mono packages/FAKE/tools/FAKE.exe build.fsx
