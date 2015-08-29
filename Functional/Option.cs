@@ -65,9 +65,9 @@ namespace Pagansoft.Functional
     public static class Option
     {
         /// <summary>Represents some result</summary>
-        private sealed class Some<TResult> : Option<TResult>
+        private sealed class OptionSome<TResult> : Option<TResult>
         {
-            public Some(TResult value)
+            public OptionSome(TResult value)
             {
                 _value = value;
             }
@@ -105,7 +105,7 @@ namespace Pagansoft.Functional
             }
         }
 
-        private sealed class None<TResult> : Option<TResult>
+        private sealed class OptionNone<TResult> : Option<TResult>
         {
             public override bool IsSome { get { return false; } }
 
@@ -143,14 +143,14 @@ namespace Pagansoft.Functional
         /// <typeparam name="T">The type of the represented value.</typeparam>
         public static Option<T> Some<T>(T value)
         {
-            return new Some<T>(value);
+            return new OptionSome<T>(value);
         }
 
         /// <summary>Creates an option which represents no value of a given type.</summary>
         /// <typeparam name="T">The type of the represented value.</typeparam>
         public static Option<T> None<T>()
         {
-            return new None<T>();
+            return new OptionNone<T>();
         }
     }
 
