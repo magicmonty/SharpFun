@@ -22,18 +22,21 @@ Target "Default" (fun _ ->
 Target "BuildRelease" (fun _ ->
     !!"*.sln"
     |> MSBuildRelease releaseDir "Build"
-    |> Log "ReleaseBuild-Output")
+    |> Log "ReleaseBuild-Output"
+)
 
 Target "BuildDebug" (fun _ ->
     !!"*.sln"
     |> MSBuildDebug testDir "Build"
-    |> Log "DebugBuild-Output: ")
+    |> Log "DebugBuild-Output: "
+)
 
 Target "Test" (fun _ ->
     !!(testDir @@ "Test.dll")
       |> NUnit(fun p ->
           { p with DisableShadowCopy = true
-                   OutputFile = testDir @@ "TestResults.xml" }))
+                   OutputFile = testDir @@ "TestResults.xml" })
+)
 
 Target "CreatePackage" (fun _ ->
     Pack(fun p ->
@@ -41,7 +44,13 @@ Target "CreatePackage" (fun _ ->
                  TemplateFile = "Functional/Functional.paket.template"
                  WorkingDir = "Functional"
                  Version = GetAssemblyVersionString(releaseDir @@ "Pagansoft.Functional.dll")
-                 ToolPath = ".paket/paket.exe" }))
+                 ToolPath = ".paket/paket.exe" })
+)
+
+Target "PushPackage" (fun _ ->
+    Push(fun p ->
+        { p with WorkingDir = deployDir })
+)
 
 // Dependencies
 "Clean"
@@ -50,6 +59,13 @@ Target "CreatePackage" (fun _ ->
   ==> "BuildRelease"
   ==> "CreatePackage"
   ==> "Default"
+
+"Clean"
+  ==> "BuildDebug"
+  ==> "Test"
+  ==> "BuildRelease"
+  ==> "CreatePackage"
+  ==> "PushPackage"
 
 // start build
 RunTargetOrDefault "Default"
