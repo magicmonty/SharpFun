@@ -29,6 +29,42 @@ namespace Pagansoft.Functional
 
             options.OptionValues(42).ShouldBe(new [] { 10, 42, 20 });
         }
+
+        [Test]
+        public void FirstOrNone_Returns_Some_Value_If_Enumerable_Contains_Values()
+        {
+            new[] { 42, 23 }.FirstOrNone().ShouldBe(Option.Some(42));
+        }
+
+        [Test]
+        public void FirstOrNone_Returns_None_If_Enumerable_Contains_No_Values()
+        {
+            new int[] { }.FirstOrNone().ShouldBe(Option.None<int>());
+        }
+
+        [Test]
+        public void FirstOrNone_Returns_None_If_Enumerable_Is_Null()
+        {
+            ((int[])null).FirstOrNone().ShouldBe(Option.None<int>());
+        }
+
+        [Test]
+        public void LastOrNone_Returns_Some_Value_If_Enumerable_Contains_Values()
+        {
+            new[] { 42, 23 }.LastOrNone().ShouldBe(Option.Some(23));
+        }
+
+        [Test]
+        public void LastOrNone_Returns_None_If_Enumerable_Contains_No_Values()
+        {
+            new int[] { }.LastOrNone().ShouldBe(Option.None<int>());
+        }
+
+        [Test]
+        public void LastOrNone_Returns_None_If_Enumerable_Is_Null()
+        {
+            ((int[])null).LastOrNone().ShouldBe(Option.None<int>());
+        }
     }
 }
 
