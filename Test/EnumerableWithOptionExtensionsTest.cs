@@ -31,6 +31,16 @@ namespace Pagansoft.Functional
         }
 
         [Test]
+        public void OptionValues_On_Null_Returns_Empty_Enumerable()
+        {
+            Option<int>[] options = null;
+
+            options.ShouldSatisfyAllConditions(
+                () => options.OptionValues().ShouldBeEmpty(),
+                () => options.OptionValues(42).ShouldBeEmpty());
+        }
+
+        [Test]
         public void FirstOrNone_Returns_Some_Value_If_Enumerable_Contains_Values()
         {
             new[] { 42, 23 }.FirstOrNone().ShouldBe(Option.Some(42));

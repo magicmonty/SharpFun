@@ -15,6 +15,11 @@ namespace Pagansoft.Functional
         /// <typeparam name="T">The 1st type parameter.</typeparam>
         public static IEnumerable<T> OptionValues<T>(this IEnumerable<Option<T>> options)
         {
+            Contract.Ensures(Contract.Result<IEnumerable<T>>() != null);
+
+            if (options == null)
+                yield break;
+            
             foreach (var option in options.Where(o => o.IsSome))
                 yield return option.Value;
         }
@@ -28,6 +33,11 @@ namespace Pagansoft.Functional
         /// <typeparam name="T">The 1st type parameter.</typeparam>
         public static IEnumerable<T> OptionValues<T>(this IEnumerable<Option<T>> options, T defaultValue)
         {
+            Contract.Ensures(Contract.Result<IEnumerable<T>>() != null);
+
+            if (options == null)
+                yield break;
+
             foreach (var option in options)
                 yield return option.ReturnValueOr(defaultValue);
         }
