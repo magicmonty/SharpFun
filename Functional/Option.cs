@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.Contracts;
 
 namespace Pagansoft.Functional
 {
@@ -17,11 +18,11 @@ namespace Pagansoft.Functional
         public abstract T Value { get; }
 
         /// <summary>
-        /// Determines whether the specified <see cref="Pagansoft.Functional.Option`1[[`0]]"/> is equal to the current <see cref="Pagansoft.Functional.Option`1"/>.
+        /// Determines whether the specified <see cref="Option{T}"/> is equal to the current <see cref="Option{T}"/>.
         /// </summary>
-        /// <param name="other">The <see cref="Pagansoft.Functional.Option`1[[`0]]"/> to compare with the current <see cref="Pagansoft.Functional.Option`1"/>.</param>
-        /// <returns><c>true</c> if the specified <see cref="Pagansoft.Functional.Option`1[[`0]]"/> is equal to the current
-        /// <see cref="Pagansoft.Functional.Option`1"/>; otherwise, <c>false</c>.</returns>
+        /// <param name="other">The <see cref="Option{T}"/> to compare with the current <see cref="Option{T}"/>.</param>
+        /// <returns><c>true</c> if the specified <see cref="Option{T}"/> is equal to the current
+        /// <see cref="Option{T}"/>; otherwise, <c>false</c>.</returns>
         public abstract bool Equals(Option<T> other);
 
         /// <summary>
@@ -32,18 +33,18 @@ namespace Pagansoft.Functional
         public abstract T ReturnValueOr(T defaultValue);
 
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object"/> is equal to the current <see cref="Pagansoft.Functional.Option`1"/>.
+        /// Determines whether the specified <see cref="System.Object"/> is equal to the current <see cref="Option{T}"/>.
         /// </summary>
-        /// <param name="obj">The <see cref="System.Object"/> to compare with the current <see cref="Pagansoft.Functional.Option`1"/>.</param>
+        /// <param name="obj">The <see cref="System.Object"/> to compare with the current <see cref="Option{T}"/>.</param>
         /// <returns><c>true</c> if the specified <see cref="System.Object"/> is equal to the current
-        /// <see cref="Pagansoft.Functional.Option`1"/>; otherwise, <c>false</c>.</returns>
+        /// <see cref="Option{T}"/>; otherwise, <c>false</c>.</returns>
         public override bool Equals(object obj)
         {
             return Equals(obj as Option<T>);
         }
 
         /// <summary>
-        /// Serves as a hash function for a <see cref="Pagansoft.Functional.Option`1"/> object.
+        /// Serves as a hash function for a <see cref="Option{T}"/> object.
         /// </summary>
         /// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a
         /// hash table.</returns>
@@ -55,6 +56,8 @@ namespace Pagansoft.Functional
         /// <param name="value">Value.</param>
         public static implicit operator Option<T>(T value)
         {
+            Contract.Ensures(Contract.Result<Option<T>>() != null);
+
             return ReferenceEquals(null, value)
                 ? Option.None<T>()
                 : Option.Some(value);
@@ -105,6 +108,7 @@ namespace Pagansoft.Functional
             }
         }
 
+        /// <summary>Represents no result</summary>
         private sealed class OptionNone<TResult> : Option<TResult>
         {
             public override bool IsSome { get { return false; } }
@@ -143,6 +147,8 @@ namespace Pagansoft.Functional
         /// <typeparam name="T">The type of the represented value.</typeparam>
         public static Option<T> Some<T>(T value)
         {
+            Contract.Ensures(Contract.Result<Option<T>>() != null);
+
             return new OptionSome<T>(value);
         }
 
@@ -150,6 +156,8 @@ namespace Pagansoft.Functional
         /// <typeparam name="T">The type of the represented value.</typeparam>
         public static Option<T> None<T>()
         {
+            Contract.Ensures(Contract.Result<Option<T>>() != null);
+
             return new OptionNone<T>();
         }
     }
