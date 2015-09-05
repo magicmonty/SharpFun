@@ -30,9 +30,11 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EitherTests.cs" />
     <Compile Include="EnumerableWithOptionExtensionsTests.cs" />
     <Compile Include="OptionExtensionsTests.cs" />
     <Compile Include="OptionTests.cs" />
+    <Compile Include="ShouldlyExtensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
