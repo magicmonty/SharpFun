@@ -5,7 +5,7 @@ using Shouldly;
 namespace Pagansoft.Functional
 {
     [TestFixture]
-    public class OptionTest
+    public class OptionTests
     {
         [Test]
         public void IsSome_Is_True_For_Option_Some()

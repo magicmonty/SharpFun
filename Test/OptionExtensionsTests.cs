@@ -6,7 +6,7 @@ using NUnit.Framework.Constraints;
 namespace Pagansoft.Functional
 {
     [TestFixture]
-    public class OptionExtensionsTest
+    public class OptionExtensionsTests
     {
         [Test]
         public void Do_Executes_If_Option_Contains_Value()

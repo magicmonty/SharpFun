@@ -4,7 +4,7 @@ using Shouldly;
 namespace Pagansoft.Functional
 {
     [TestFixture]
-    public class EnumerableWithOptionExtensionsTest
+    public class EnumerableWithOptionExtensionsTests
     {
         [Test]
         public void OptionValues_Is_Empty_If_Enumerable_Is_Empty()

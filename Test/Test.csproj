@@ -30,9 +30,9 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="OptionTest.cs" />
-    <Compile Include="OptionExtensionsTest.cs" />
-    <Compile Include="EnumerableWithOptionExtensionsTest.cs" />
+    <Compile Include="EnumerableWithOptionExtensionsTests.cs" />
+    <Compile Include="OptionExtensionsTests.cs" />
+    <Compile Include="OptionTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -62,7 +62,6 @@
   <ItemGroup>
     <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit\lib\nunit.framework.dll</HintPath>
-      <Private>True</Private>
       <Paket>True</Paket>
     </Reference>
   </ItemGroup>
