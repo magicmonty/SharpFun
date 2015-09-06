@@ -9,7 +9,7 @@ namespace Pagansoft.Functional
     /// <example>
     /// <code><![CDATA[
     /// // Prints: "Success: 42"
-    /// var success = new Either<int, Exception>(42);
+    /// var success = Either.Left<int, Exception>(42);
     /// success.Match(
     ///   r => Console.WriteLine("Success: {0}", r),
     ///   ex => Console.WriteLine(ex.Message));
@@ -17,90 +17,40 @@ namespace Pagansoft.Functional
     ///
     /// <code>
     /// // Prints: "An error happened!"
-    /// var error = new Either<int, Exception>(new System.Exception("An error happened!"));
+    /// var error = Either.Right<int, Exception>(new System.Exception("An error happened!"));
     /// success.Match(
     ///   r => Console.WriteLine("Success: {0}", r),
     ///   ex => Console.WriteLine(ex.Message));
     /// ]]></code>
     /// </example>
-    public class Either<TLeft, TRight> : IEquatable<Either<TLeft, TRight>>
+    public abstract class Either<TLeft, TRight>
     {
-        private readonly bool _isLeft;
-
-        private readonly TLeft _leftValue;
-        private readonly TRight _rightValue;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Either{TLeft, TRight}"/> class with a
-        /// value of type <typeparamref name="TLeft" />
-        /// </summary>
-        /// <param name="leftValue">The value (must not be null).</param>
-        public Either(TLeft leftValue)
-        {
-            Contract.Requires(leftValue != null);
-
-            _rightValue = default(TRight);
-            _leftValue = leftValue;
-            _isLeft = true;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Either{TLeft, TRight}"/> class with a
-        /// value of type <typeparamref name="TRight" />
-        /// </summary>
-        /// <param name="rightValue">The value (must not be null).</param>
-        public Either(TRight rightValue)
-        {
-            Contract.Requires(rightValue != null);
-
-            _rightValue = rightValue;
-            _leftValue = default(TLeft);
-            _isLeft = false;
-        }
-
-        /// <summary>
-        /// Executes the given Action, depending of the internal type.
-        /// </summary>
-        /// <param name="onLeft">This action will be executed, if this instance is a <typeparamref name="TLeft" /></param>
-        /// <param name="onRight">This action will be executed, if this instance is a <typeparamref name="TRight" />.</param>
-        public void Match(Action<TLeft> onLeft, Action<TRight> onRight)
-        {
-            if (_isLeft)
-                onLeft(_leftValue);
-            else
-                onRight(_rightValue);
-        }
-
-        /// <summary>
-        /// Executes the given Action, if the internal value is an either.
-        /// </summary>
-        /// <param name="onLeft">This action will be executed, if this instance is a <typeparamref name="TLeft" /></param>
-        public void Match(Action<TLeft> onLeft)
-        {
-            Match(onLeft, _ => {});
-        }
-
-        /// <summary>
-        /// Executes the given Action, if the internal value is an or.
-        /// </summary>
-        /// <param name="onRight">This action will be executed, if this instance is a <typeparamref name="TRight" /></param>
-        public void Match(Action<TRight> onRight)
-        {
-            Match(_ => {}, onRight);
-        }
-
         /// <summary>
         /// Returns the value of the specified function based on the internal state.
         /// </summary>
         /// <param name="onLeft">This function is called, if the internal value is a <typeparamref name="TLeft" />.</param>
         /// <param name="onRight">This function is called, if the internal value is a <typeparamref name="TRight" />.</param>
         /// <typeparam name="TResult">The type of the result.</typeparam>
-        public TResult Case<TResult>(Func<TLeft, TResult> onLeft, Func<TRight, TResult> onRight)
-        {
-            return _isLeft 
-                ? onLeft(_leftValue)
-                : onRight(_rightValue);
-        }
+        public abstract TResult Case<TResult>(Func<TLeft, TResult> onLeft, Func<TRight, TResult> onRight);
+
+        /// <summary>
+        /// Executes the given Action, depending of the internal type.
+        /// </summary>
+        /// <param name="onLeft">This action will be executed, if this instance is a <typeparamref name="TLeft" /></param>
+        /// <param name="onRight">This action will be executed, if this instance is a <typeparamref name="TRight" />.</param>
+        public abstract void Match(Action<TLeft> onLeft, Action<TRight> onRight);
+
+        /// <summary>
+        /// Executes the given Action, if this instance is a <typeparamref name="TLeft" />.
+        /// </summary>
+        /// <param name="onLeft">This action will be executed, if this instance is a <typeparamref name="TLeft" /></param>
+        public abstract void MatchLeft(Action<TLeft> onLeft);
+
+        /// <summary>
+        /// Executes the given Action, if this instance is a <typeparamref name="TRight" />.
+        /// </summary>
+        /// <param name="onRight">This action will be executed, if this instance is a <typeparamref name="TRight" /></param>
+        public abstract void MatchRight(Action<TRight> onRight);
 
         #region Equality members
 
@@ -110,12 +60,8 @@ namespace Pagansoft.Functional
             if (ReferenceEquals(null, other))
                 return false;
 
-            if (ReferenceEquals(this, other))
-                return true;
-
-            return _isLeft
-                ? (other._isLeft && Equals(_leftValue, other._leftValue))
-                : (!other._isLeft && Equals(_rightValue, other._rightValue));
+            return ReferenceEquals(this, other) 
+                || (IsLeftValueEqual(other) && IsRightValueEqual(other));
         }
 
         /// <inheritdoc/>
@@ -129,10 +75,7 @@ namespace Pagansoft.Functional
         {
             unchecked
             {
-                var hashCode = _isLeft.GetHashCode();
-                hashCode = (hashCode * 397) ^ (_isLeft && _leftValue != null ? _leftValue.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (!_isLeft && _rightValue != null ? _rightValue.GetHashCode() : 0);
-                return hashCode;
+                return 0;
             }
         }
 
@@ -152,12 +95,169 @@ namespace Pagansoft.Functional
 
         #endregion
 
-        /// <inheritdoc/>
-        public override string ToString()
+        protected abstract bool IsLeftValueEqual(Either<TLeft, TRight> other);
+
+        protected abstract bool IsRightValueEqual(Either<TLeft, TRight> other);
+    }
+
+    /// <summary>
+    /// Helper class for creating Either values
+    /// </summary>
+    public static class Either
+    {
+        private sealed class EitherLeft<TLeft, TRight> : Either<TLeft, TRight>
         {
-            return _isLeft 
-                ? _leftValue == null ? string.Empty : _leftValue.ToString()
-                : _rightValue == null ? string.Empty : _rightValue.ToString();
+            private readonly TLeft _value;
+                        
+            public EitherLeft(TLeft value)
+            {
+                _value = value;
+            }
+
+            #region Either implementation
+
+            public override TResult Case<TResult>(Func<TLeft, TResult> onLeft, Func<TRight, TResult> onRight)
+            {
+                return onLeft(_value);
+            }
+
+            public override void Match(Action<TLeft> onLeft, Action<TRight> onRight)
+            {
+                onLeft(_value);
+            }
+
+            public override void MatchLeft(Action<TLeft> onLeft)
+            {
+                onLeft(_value);
+            }
+
+            public override void MatchRight(Action<TRight> onRight)
+            {
+                /* intentionally left blank */
+            }
+
+            protected override bool IsLeftValueEqual(Either<TLeft, TRight> other)
+            {
+                if (ReferenceEquals(null, other))
+                    return false;
+
+                if (other.GetType() != GetType())
+                    return false;
+                
+                return Equals(_value, ((EitherLeft<TLeft, TRight>)other)._value);
+            }
+
+            protected override bool IsRightValueEqual(Either<TLeft, TRight> other)
+            {
+                return !ReferenceEquals(null, other) && (other.GetType() == GetType());
+            }
+
+            #endregion
+
+            #region Equality members
+
+            /// <inheritdoc/>
+            public override int GetHashCode()
+            {
+                unchecked
+                {
+                    return _value != null ? _value.GetHashCode() : 0;
+                }
+            }
+                
+            #endregion
+
+            public override string ToString()
+            {
+                return _value == null ? string.Empty : _value.ToString();
+            }
+        }
+
+        private sealed class EitherRight<TLeft, TRight> : Either<TLeft, TRight>
+        {
+            private readonly TRight _value;
+
+            public EitherRight(TRight value)
+            {
+                _value = value;
+            }
+
+            #region IEither implementation
+
+            public override TResult Case<TResult>(Func<TLeft, TResult> onLeft, Func<TRight, TResult> onRight)
+            {
+                return onRight(_value);
+            }
+
+            public override void Match(Action<TLeft> onLeft, Action<TRight> onRight)
+            {
+                onRight(_value);
+            }
+
+            public override void MatchLeft(Action<TLeft> onLeft)
+            {
+                /* intentionally left blank */
+            }
+
+            public override void MatchRight(Action<TRight> onRight)
+            {
+                onRight(_value);
+            }
+                
+            protected override bool IsLeftValueEqual(Either<TLeft, TRight> other)
+            {
+                return !ReferenceEquals(null, other) && (other.GetType() == GetType());
+            }
+
+            protected override bool IsRightValueEqual(Either<TLeft, TRight> other)
+            {
+                if (ReferenceEquals(null, other))
+                    return false;
+
+                if (other.GetType() != GetType())
+                    return false;
+
+                return Equals(_value, ((EitherRight<TLeft, TRight>)other)._value);
+            }
+
+            #endregion
+
+            #region Equality members
+
+            /// <inheritdoc/>
+            public override int GetHashCode()
+            {
+                unchecked
+                {
+                    return _value != null ? _value.GetHashCode() : 0;
+                }
+            }
+
+            #endregion
+
+            public override string ToString()
+            {
+                return _value == null ? string.Empty : _value.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Creates a left value
+        /// </summary>
+        /// <param name="value">Value.</param>
+        /// <typeparam name="TLeft">The 1st type parameter.</typeparam>
+        /// <typeparam name="TRight">The 2nd type parameter.</typeparam>
+        public static Either<TLeft, TRight> Left<TLeft, TRight>(TLeft value) 
+        {
+            return new EitherLeft<TLeft, TRight>(value);
+        }
+
+        /// <summary>
+        /// Creates a right value
+        /// </summary>
+        public static Either<TLeft, TRight> Right<TLeft, TRight>(TRight value) 
+        {
+            return new EitherRight<TLeft, TRight>(value);
         }
     }
 }
