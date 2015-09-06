@@ -7,5 +7,13 @@ licenseUrl https://raw.githubusercontent.com/magicmonty/SharpFun/master/LICENSE.
 tags data type,functional,option
 description
   Functional data types for C#
+releaseNotes
+  1.0.1:
+    - Adds Either type
+    - new Extension methods for IEnumerable:
+      - Option<T> FirstOrNone<T>(IEnumerable<T>)
+      - Option<T> LastOrNone<T>(IEnumerable<T>)
+    - Extension method IEnumerable<T>.OptionValues is now null safe
+  1.0.0: Initial Release with an Option type
 files
   ../build/release/Pagansoft.Functional.dll ==> lib
