@@ -11,6 +11,8 @@ releaseNotes
   1.0.1:
     - Adds Either type
     - Adds Result type
+    - Adds HasValue and HasNoValue to the Option type as aliases for IsSome and IsNone
+      as they seem to fit better the intention
     - new Extension methods for IEnumerable:
       - Option<T> FirstOrNone<T>(IEnumerable<T>)
       - Option<T> LastOrNone<T>(IEnumerable<T>)

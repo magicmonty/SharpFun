@@ -35,9 +35,21 @@ namespace Pagansoft.Functional
         /// <value><c>true</c> if this instance represents some value; otherwise, <c>false</c>.</value>
         public abstract bool IsSome { get; }
 
+        /// <summary>
+        /// Gets a value indicating whether this instance has a value
+        /// </summary>
+        /// <value><c>true</c> if this instance has value; otherwise, <c>false</c>.</value>
+        public bool HasValue { get { return IsSome; } }
+
         /// <summary>Gets a value indicating whether this instance represents no value.</summary>
         /// <value><c>true</c> if this instance represents no value; otherwise, <c>false</c>.</value>
         public bool IsNone { get { return !IsSome; } }
+
+        /// <summary>
+        /// Gets a value indicating whether this instance has NO value
+        /// </summary>
+        /// <value><c>true</c> if this instance has NO value; otherwise, <c>false</c>.</value>
+        public bool HasNoValue { get { return IsNone; } }
 
         /// <summary>Gets the value.</summary>
         public abstract T Value { get; }
