@@ -55,6 +55,18 @@ namespace Pagansoft.Functional
                     () => Equals(value, otherValue).ShouldBe(false, "Equals(value, otherValue)"),
                     () => value.ShouldNotBe(otherValue));
         }
+
+        public static void ShouldBeSome<T>(this Option<T> actual, T expected) 
+        {
+            actual.ShouldSatisfyAllConditions(
+                () => actual.IsSome.ShouldBe(true),
+                () => actual.Value.ShouldBe(expected)); 
+        }
+
+        public static void ShouldBeNone<T>(this Option<T> actual) 
+        {
+            actual.IsSome.ShouldBe(false); 
+        }
     }
 }
 

@@ -38,6 +38,7 @@
     <Compile Include="Properties\GlobalAssemblyInfo.cs" />
     <Compile Include="Either.cs" />
     <Compile Include="Result.cs" />
+    <Compile Include="ExceptionWithContext.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
