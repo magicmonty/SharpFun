@@ -35,18 +35,18 @@ var noValue2 = "FOO".AsOption(s => s.StartsWith("K")); // Creates an Option.None
 #### Check, if an option has a value or not
 ```csharp
 var some = Option.Some("FOO");
-Assert.Equals(true, some.HasValue);
-Assert.Equals(false, some.HasNoValue);
+Assert.IsEqual(true, some.HasValue);
+Assert.IsEqual(false, some.HasNoValue);
 
 var none = Option.None<string>();
-Assert.Equals(false, none.HasValue);
-Assert.Equals(true, none.HasNoValue);
+Assert.IsEqual(false, none.HasValue);
+Assert.IsEqual(true, none.HasNoValue);
 ```
 
 #### Getting the value out of an option
 ```csharp
-Assert.Equals("FOO", Option.Some("FOO").ResultValueOr("BAR"));
-Assert.Equals("BAR", Option.None<string>().ResultValueOr("BAR"));
+Assert.IsEqual("FOO", Option.Some("FOO").ResultValueOr("BAR"));
+Assert.IsEqual("BAR", Option.None<string>().ResultValueOr("BAR"));
 ```
 
 #### Extension methods
@@ -157,11 +157,109 @@ var otherNone = some.WhereNot(v => v > 40); // Option.None<int>()
 
 ## Either
 
-TBD
+Implementation of an [Either Type / Tagged Union](https://en.wikipedia.org/wiki/Tagged_union)
+
+### Usage
+
+#### Construction
+```csharp
+var leftValue = Either.Left<int, string>(42);
+var rightValue = Either.Right<int, string>("FOO");
+```
+
+#### Match / MatchLeft / MatchRight
+
+Executes an action on the matching value
+
+```csharp
+var leftValue = Either.Left<int, string>(42);
+var rightValue = Either.Right<int, string>("FOO");
+
+leftValue.MatchLeft(v => Console.WriteLine("Left value is {0}", v)); // Prints "Left value is 42"
+leftValue.MatchRight(v => Console.WriteLine("Right value is {0}", v)); // Does nothing
+
+rightValue.MatchLeft(v => Console.WriteLine("Left value is {0}", v)); // Does nothing
+rightValue.MatchRight(v => Console.WriteLine("Right value is {0}", v)); // Prints "Right value is Foo"
+
+leftValue.Match(
+  v => Console.WriteLine("Left value is {0}", v),
+  v => Console.WriteLine("Right value is {0}", v)); // Prints "Left value is 42"
+
+rightValue.Match(
+  v => Console.WriteLine("Left value is {0}", v),
+  v => Console.WriteLine("Right value is {0}", v)); // Prints "Right value is FOO"
+```
+
+#### Case
+
+Returns a value depending on the value of the instance.
+
+```csharp
+var leftValue = Either.Left<int, string>(42);
+var rightValue = Either.Right<int, string>("FOO");
+
+var value1 = leftValue.Case(_ => true, _ => false);
+Assert.IsEqual(true, value1)
+
+var value2 = rightValue.Case(_ => true, _ => false);
+Assert.IsEqual(false, value2)
+```
 
 ## Result
 
-TBD
+This is a special `Either` type representing a Result, which can have a success value
+and a failure of type `ExceptionWithContext`
+
+### Usage
+
+#### Construction
+```csharp
+var success = Result.Success(42);
+var exceptionContext = new Dictionary<string, object>
+{
+  { "Key1", "Value1" },
+  ( "Key2", new MessageObject() )
+};
+var failure = Result.Failure<int>(
+  new ExceptionWithContext(
+    "My super awesome message",
+    exceptionContext));
+
+var failure2 = Result.Failure<int>("My super awesome message");
+var failure3 = Result.Failure<int>("My super awesome message", context);
+var failure4 = Result.Failure<int>("My super awesome message", new Exception("Inner exception"), context);
+```
+
+#### MatchSuccess / MatchFailure
+As the `Result` type is just a specialized `Either` type, all methods on `Either` work also on `Result`.
+For convenience there are two additional aliases `MatchSuccess` and `MatchFailure` which map directly
+to `MatchLeft` resp. `MatchRight` on the `Either` type.
+
+
+## ExceptionWithContext
+
+This is the implementation of a standard exception with additional context.
+The context is stored in a dicitionary.
+
+This Exception is used as right value for the `Result` type.
+
+There is a helper method on the Exception for getting context values out of the Exception:
+```csharp
+public Option<TResult> GetContextValue<TResult>(string key)
+{
+  if (!_context.ContainsKey(key))
+    return Option.None<TResult>();
+
+  try
+  {
+    return ((TResult)_context[key]).AsOption();
+  }
+  catch (InvalidCastException)
+  {
+    return Option.None<TResult>();
+  }
+}
+```
 
 # Building
 - First build (gets all dependencies automatically)
