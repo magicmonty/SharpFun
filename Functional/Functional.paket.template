@@ -10,6 +10,7 @@ description
 releaseNotes
   1.0.1:
     - Adds Either type
+    - Adds Result type
     - new Extension methods for IEnumerable:
       - Option<T> FirstOrNone<T>(IEnumerable<T>)
       - Option<T> LastOrNone<T>(IEnumerable<T>)
