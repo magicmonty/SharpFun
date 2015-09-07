@@ -28,6 +28,9 @@ using System.Diagnostics.Contracts;
 
 namespace Pagansoft.Functional
 {
+    /// <summary>
+    /// Extension methods for the <see cref="Option{T}"/> type
+    /// </summary>
     public static class OptionExtensions
     {
         /// <summary>
@@ -55,7 +58,6 @@ namespace Pagansoft.Functional
         /// </summary>
         /// <param name="option">The option.</param>
         /// <param name="noneAction">The action to invoke.</param>
-        /// <param name="noneAction">Action.</param>
         public static Option<T> OtherwiseDo<T>(this Option<T> option, Action noneAction)
         {
             Contract.Requires(option != null);
@@ -139,7 +141,7 @@ namespace Pagansoft.Functional
         /// <summary>
         /// Transforms the value of the input <paramref name="option"/> with the help of 
         /// the <paramref name="transformation"/> function into a new option of type <typeparamref name="TResult" />
-        /// (alias for <see cref="Map"/>
+        /// (alias for <see cref="OptionExtensions.Map{TInput, TResult}"/>
         /// </summary>
         /// <param name="option">Option.</param>
         /// <param name="transformation">The transformation function.</param>
@@ -187,7 +189,7 @@ namespace Pagansoft.Functional
         /// Transforms the value of the input <paramref name="option"/> with the help of 
         /// the <paramref name="transformation"/> function into a new option of type <typeparamref name="TResult" />
         /// If the transformation function throws an exception, a None will be returned
-        /// (alias for <see cref="TryMap"/>)
+        /// (alias for <see cref="OptionExtensions.TryMap{TInput, TResult}"/>)
         /// </summary>
         /// <param name="option">Option.</param>
         /// <param name="transformation">The transformation function.</param>
@@ -254,7 +256,7 @@ namespace Pagansoft.Functional
 
         /// <summary>
         /// Transforms a value into an option.
-        /// If <typeparamref name="TResult"> is a reference type and the value is null,
+        /// If <typeparamref name="TResult" /> is a reference type and the value is null,
         /// then a None will be returned, otherwise a Some
         /// </summary>
         /// <param name="value">The value to convert.</param>
@@ -288,11 +290,12 @@ namespace Pagansoft.Functional
 
         /// <summary>
         /// Transforms a value into an option.
-        /// If <typeparamref name="TResult"> is a reference type and the value is null,
+        /// If <typeparamref name="TResult" /> is a reference type and the value is null,
         /// then a None will be returned, otherwise a Some or a None is returned
-        /// depending of the return value of the predicate
+        /// depending of the return value of the <paramref name="predicate" />
         /// </summary>
         /// <param name="value">The value to convert.</param>
+        /// <param name="predicate">Predicate function which is evaluated</param>
         /// <typeparam name="TResult">The type of the value.</typeparam>
         /// <returns>The option.</returns>
         public static Option<TResult> AsOption<TResult>(this TResult value, Func<TResult, bool> predicate)
@@ -310,6 +313,7 @@ namespace Pagansoft.Functional
         /// depending of the return value of the predicate
         /// </summary>
         /// <param name="value">The value to convert.</param>
+        /// <param name="predicate">Predicate function which is evaluated</param>
         /// <typeparam name="TResult">The type of the value.</typeparam>
         /// <returns>The option.</returns>
         public static Option<TResult> AsOption<TResult>(this TResult? value, Func<TResult, bool> predicate) where TResult : struct
@@ -322,7 +326,7 @@ namespace Pagansoft.Functional
 
         /// <summary>Returns the option if the predicate matches on the value</summary>
         /// <param name="option">Option.</param>
-        /// <param name="predicate">Predicate.</param>
+        /// <param name="predicate">Predicate function which is evaluated</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
         public static Option<T> Where<T>(this Option<T> option, Func<T, bool> predicate)
         {
@@ -335,9 +339,9 @@ namespace Pagansoft.Functional
                 : Option.None<T>();
         }
 
-        /// <summary>Returns the option if the predicate matches on the value (alias for <see cref="Where"/>Where>)</summary>
+        /// <summary>Returns the option if the predicate matches on the value (alias for <see cref="OptionExtensions.Where{T}"/>)</summary>
         /// <param name="option">Option.</param>
-        /// <param name="predicate">Predicate.</param>
+        /// <param name="predicate">Predicate function which is evaluated</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
         public static Option<T> If<T>(this Option<T> option, Func<T, bool> predicate)
         {
@@ -363,7 +367,7 @@ namespace Pagansoft.Functional
                 : Option.None<T>();
         }
 
-        /// <summary>Returns the option if the predicate didn't match on the value (alias for <see cref="WhereNot"/>)</summary>
+        /// <summary>Returns the option if the predicate didn't match on the value (alias for <see cref="OptionExtensions.WhereNot{T}"/>)</summary>
         /// <param name="option">Option.</param>
         /// <param name="predicate">Predicate.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>

@@ -30,6 +30,10 @@ using System.Diagnostics.Contracts;
 
 namespace Pagansoft.Functional
 {
+    /// <summary>
+    /// Extension methods for <see cref="IEnumerable{T}"/> with <see cref="Option{T}"/>
+    /// elements.
+    /// </summary>
     public static class EnumerableWithOptionExtensions
     {
         /// <summary>

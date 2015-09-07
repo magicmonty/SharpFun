@@ -119,8 +119,18 @@ namespace Pagansoft.Functional
 
         #endregion
 
+        /// <summary>
+        /// Determines whether the left value of this instance is equal to the specified other value.
+        /// </summary>
+        /// <returns><c>true</c> if the left value of this instance is equal to the specified other value; otherwise, <c>false</c>.</returns>
+        /// <param name="other">The other value.</param>
         protected abstract bool IsLeftValueEqual(Either<TLeft, TRight> other);
 
+        /// <summary>
+        /// Determines whether the right value of this instance is equal to the specified other value.
+        /// </summary>
+        /// <returns><c>true</c> if the right value of this instance is equal to the specified other value; otherwise, <c>false</c>.</returns>
+        /// <param name="other">The other value.</param>
         protected abstract bool IsRightValueEqual(Either<TLeft, TRight> other);
     }
 

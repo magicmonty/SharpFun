@@ -81,7 +81,7 @@ namespace Pagansoft.Functional
         
         /// <summary>Gets a value from the exception context.</summary>
         /// <returns>
-        /// An <see cref="Option.Some{T}"/> with the value, if a value of the given <typeparamref name="T">type<typeparamref> with the given <paramref name="key"/> was found,
+        /// An <see cref="Option.Some{T}"/> with the value, if a value of the given <typeparamref name="TResult">type</typeparamref> with the given <paramref name="key"/> was found,
         /// otherwise a <see cref="Option.None{T}"/>.
         /// </returns>
         /// <param name="key">The key.</param>
