@@ -138,7 +138,7 @@ namespace Pagansoft.Functional
         [Test]
         public void ToString_Returns_EmptyString_If_Failure_Value_Is_Null()
         {
-            Result.Failure<string>(null).ToString().ShouldBeEmpty();
+            Result.Failure<string>((ExceptionWithContext)null).ToString().ShouldBeEmpty();
         }
 
         [Test]

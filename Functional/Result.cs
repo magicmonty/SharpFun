@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Collections.Generic;
 
 namespace Pagansoft.Functional
 {
@@ -185,6 +186,39 @@ namespace Pagansoft.Functional
         public static Result<TSuccess> Failure<TSuccess>(ExceptionWithContext failure)
         {
             return new FailureResult<TSuccess>(failure);
+        }
+
+        /// <summary>
+        /// Creates a Failure Result value.
+        /// </summary>
+        /// <param name="failureMessage">The failure message.</param>
+        /// <typeparam name="TSuccess">The type of the success value.</typeparam>
+        public static Result<TSuccess> Failure<TSuccess>(string failureMessage)
+        {
+            return Result.Failure<TSuccess>(new ExceptionWithContext(failureMessage, null));
+        }
+
+        /// <summary>
+        /// Creates a Failure Result value.
+        /// </summary>
+        /// <param name="failureMessage">The failure message.</param>
+        /// <param name="context">The context values.</param>
+        /// <typeparam name="TSuccess">The type of the success value.</typeparam>
+        public static Result<TSuccess> Failure<TSuccess>(string failureMessage, Dictionary<string, object> context)
+        {
+            return Result.Failure<TSuccess>(new ExceptionWithContext(failureMessage, context));
+        }
+
+        /// <summary>
+        /// Creates a Failure Result value.
+        /// </summary>
+        /// <param name="failureMessage">The failure message.</param>
+        /// <param name="innerException">The inner exception.</param>
+        /// <param name="context">The context values.</param>
+        /// <typeparam name="TSuccess">The type of the success value.</typeparam>
+        public static Result<TSuccess> Failure<TSuccess>(string failureMessage, Exception innerException, Dictionary<string, object> context)
+        {
+            return Result.Failure<TSuccess>(new ExceptionWithContext(failureMessage, innerException, context));
         }
     }
 }
