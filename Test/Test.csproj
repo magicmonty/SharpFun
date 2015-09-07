@@ -36,6 +36,7 @@
     <Compile Include="OptionTests.cs" />
     <Compile Include="ShouldlyExtensions.cs" />
     <Compile Include="ExceptionWithContextTests.cs" />
+    <Compile Include="ResultTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

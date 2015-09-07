@@ -23,7 +23,169 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+using System;
+
 namespace Pagansoft.Functional
 {
+    /// <summary>
+    /// Base class for a Result.
+    /// A result is a special case of an <see cref="Either{TLeft, TRight}"/>, where the
+    /// left value is a success value and the right value is an <see cref="ExceptionWithContext"/>.
+    /// </summary>
+    public abstract class Result<TSuccess> : Either<TSuccess, ExceptionWithContext>
+    {
+        /// <inheritdoc />
+        public override void Match(Action<TSuccess> onLeft, Action<ExceptionWithContext> onRight)
+        {
+            MatchSuccess(onLeft);
+            MatchFailure(onRight);
+        }
+
+        /// <inheritdoc />
+        public override void MatchLeft(Action<TSuccess> onLeft)
+        {
+            /* intentionally left blank */
+        }
+
+        /// <inheritdoc />
+        public override void MatchRight(Action<ExceptionWithContext> onRight)
+        {
+            /* intentionally left blank */
+        }
+            
+        /// <summary>
+        /// Executes the <paramref name="onSuccess"/> method, if the instance is a Success value.
+        /// </summary>
+        /// <param name="onSuccess">The action, which is called on success.</param>
+        public void MatchSuccess(Action<TSuccess> onSuccess)
+        {
+            MatchLeft(onSuccess);
+        }
+
+        /// <summary>
+        /// Executes the <paramref name="onFailure"/> method, if the instance is a Failure value.
+        /// </summary>
+        /// <param name="onFailure">The action, which is called on failure.</param>
+        public void MatchFailure(Action<ExceptionWithContext> onFailure)
+        {
+            MatchRight(onFailure);
+        }
+    }
+
+    /// <summary>
+    /// Helper class for creating results
+    /// </summary>
+    public static class Result
+    {
+        private sealed class SuccessResult<TSuccess> : Result<TSuccess>
+        {
+            private readonly TSuccess _value;
+
+            public SuccessResult (TSuccess value)
+            {
+                _value = value;
+            }
+
+            #region implemented abstract members of Either
+
+            public override TResult Case<TResult>(Func<TSuccess, TResult> onLeft, Func<ExceptionWithContext, TResult> onRight)
+            {
+                return onLeft(_value);
+            }
+
+            public override void MatchLeft(Action<TSuccess> onLeft)
+            {
+                onLeft(_value);
+            }
+
+            protected override bool IsLeftValueEqual(Either<TSuccess, ExceptionWithContext> other)
+            {
+                if (ReferenceEquals(null, other))
+                    return false;
+
+                if (other.GetType() != GetType())
+                    return false;
+
+                return Equals(_value, ((SuccessResult<TSuccess>)other)._value);
+            }
+
+            protected override bool IsRightValueEqual(Either<TSuccess, ExceptionWithContext> other)
+            {
+                return !ReferenceEquals(null, other) && (other.GetType() == GetType());
+            }
+
+            #endregion
+
+            public override string ToString()
+            {
+                return _value == null ? "" : _value.ToString();
+            }
+        }
+
+        private sealed class FailureResult<TSuccess> : Result<TSuccess>
+        {
+            private readonly ExceptionWithContext _failure;
+
+            public FailureResult (ExceptionWithContext failure)
+            {
+                _failure = failure;
+            }
+
+            #region implemented abstract members of Either
+
+            public override TResult Case<TResult>(Func<TSuccess, TResult> onLeft, Func<ExceptionWithContext, TResult> onRight)
+            {
+                return onRight(_failure);
+            }
+
+            public override void MatchRight(Action<ExceptionWithContext> onRight)
+            {
+                onRight(_failure);
+            }
+
+            protected override bool IsLeftValueEqual(Either<TSuccess, ExceptionWithContext> other)
+            {
+                return !ReferenceEquals(null, other) && (other.GetType() == GetType());
+            }
+
+            protected override bool IsRightValueEqual(Either<TSuccess, ExceptionWithContext> other)
+            {
+                if (ReferenceEquals(null, other))
+                    return false;
+
+                if (other.GetType() != GetType())
+                    return false;
+
+                return Equals(_failure, ((FailureResult<TSuccess>)other)._failure);
+            }
+
+            #endregion
+
+            public override string ToString()
+            {
+                return _failure == null ? "" : _failure.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Creates a Success Result value.
+        /// </summary>
+        /// <param name="value">The success value.</param>
+        /// <typeparam name="TSuccess">The type of the success value.</typeparam>
+        public static Result<TSuccess> Success<TSuccess>(TSuccess value)
+        {
+            return new SuccessResult<TSuccess>(value);
+        }
+
+        /// <summary>
+        /// Creates a Failure Result value.
+        /// </summary>
+        /// <param name="failure">The failure exception.</param>
+        /// <typeparam name="TSuccess">The type of the success value.</typeparam>
+        public static Result<TSuccess> Failure<TSuccess>(ExceptionWithContext failure)
+        {
+            return new FailureResult<TSuccess>(failure);
+        }
+    }
 }
 
