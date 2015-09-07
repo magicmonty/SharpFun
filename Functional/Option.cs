@@ -33,23 +33,11 @@ namespace Pagansoft.Functional
     {
         /// <summary>Gets a value indicating whether this instance represents some value.</summary>
         /// <value><c>true</c> if this instance represents some value; otherwise, <c>false</c>.</value>
-        public abstract bool IsSome { get; }
-
-        /// <summary>
-        /// Gets a value indicating whether this instance has a value
-        /// </summary>
-        /// <value><c>true</c> if this instance has value; otherwise, <c>false</c>.</value>
-        public bool HasValue { get { return IsSome; } }
+        public abstract bool HasValue { get; }
 
         /// <summary>Gets a value indicating whether this instance represents no value.</summary>
         /// <value><c>true</c> if this instance represents no value; otherwise, <c>false</c>.</value>
-        public bool IsNone { get { return !IsSome; } }
-
-        /// <summary>
-        /// Gets a value indicating whether this instance has NO value
-        /// </summary>
-        /// <value><c>true</c> if this instance has NO value; otherwise, <c>false</c>.</value>
-        public bool HasNoValue { get { return IsNone; } }
+        public bool HasNoValue { get { return !HasValue; } }
 
         /// <summary>Gets the value.</summary>
         public abstract T Value { get; }
@@ -116,7 +104,7 @@ namespace Pagansoft.Functional
 
             private readonly TResult _value;
 
-            public override bool IsSome { get { return true; } }
+            public override bool HasValue { get { return true; } }
 
             public override TResult ReturnValueOr(TResult defaultValue)
             {
@@ -148,7 +136,7 @@ namespace Pagansoft.Functional
         /// <summary>Represents no result</summary>
         private sealed class OptionNone<TResult> : Option<TResult>
         {
-            public override bool IsSome { get { return false; } }
+            public override bool HasValue { get { return false; } }
 
             public override TResult Value
             {

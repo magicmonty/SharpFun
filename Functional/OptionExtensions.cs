@@ -46,7 +46,7 @@ namespace Pagansoft.Functional
             Contract.Requires(someAction != null);
             Contract.Ensures(Contract.Result<Option<T>>() != null);
 
-            if (option.IsSome)
+            if (option.HasValue)
                 someAction(option.Value);
 
             return option;
@@ -64,7 +64,7 @@ namespace Pagansoft.Functional
             Contract.Requires(noneAction != null);
             Contract.Ensures(Contract.Result<Option<T>>() != null);
 
-            if (option.IsNone)
+            if (option.HasNoValue)
                 noneAction();
             
             return option;
@@ -222,7 +222,7 @@ namespace Pagansoft.Functional
             Contract.Requires(transformation != null);
             Contract.Ensures(Contract.Result<Option<TResult>>() != null);
 
-            return option.IsSome
+            return option.HasValue
                 ? transformation(option.Value)
                 : Option.None<TResult>();
         }
@@ -334,7 +334,7 @@ namespace Pagansoft.Functional
             Contract.Requires(predicate != null);
             Contract.Ensures(Contract.Result<Option<T>>() != null);
 
-            return option.IsSome && predicate(option.Value)
+            return option.HasValue && predicate(option.Value)
                 ? option
                 : Option.None<T>();
         }
@@ -362,7 +362,7 @@ namespace Pagansoft.Functional
             Contract.Requires(predicate != null);
             Contract.Ensures(Contract.Result<Option<T>>() != null);
 
-            return option.IsSome && !predicate(option.Value)
+            return option.HasValue && !predicate(option.Value)
                 ? option
                 : Option.None<T>();
         }

@@ -33,17 +33,17 @@ namespace Pagansoft.Functional
     public class OptionTests
     {
         [Test]
-        public void IsSome_Is_True_For_Option_Some()
+        public void HasValue_Is_True_For_Option_Some()
         {
             var sut = Option.Some(1);
-            sut.IsSome.ShouldBe(true);
+            sut.HasValue.ShouldBe(true);
         }
 
         [Test]
-        public void IsNone_Is_False_For_Option_Some()
+        public void HasNoValue_Is_False_For_Option_Some()
         {
             var sut = Option.Some(1);
-            sut.IsNone.ShouldBe(false);
+            sut.HasNoValue.ShouldBe(false);
         }
 
         [Test]
@@ -54,17 +54,17 @@ namespace Pagansoft.Functional
         }
 
         [Test]
-        public void IsSome_Is_False_For_Option_None()
+        public void HasValue_Is_False_For_Option_None()
         {
             var sut = Option.None<int>();
-            sut.IsSome.ShouldBe(false);
+            sut.HasValue.ShouldBe(false);
         }
 
         [Test]
-        public void IsNone_Is_True_For_Option_None()
+        public void HasNoValue_Is_True_For_Option_None()
         {
             var sut = Option.None<int>();
-            sut.IsNone.ShouldBe(true);
+            sut.HasNoValue.ShouldBe(true);
         }
 
         [Test]

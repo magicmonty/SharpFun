@@ -49,7 +49,7 @@ namespace Pagansoft.Functional
             if (options == null)
                 yield break;
             
-            foreach (var option in options.Where(o => o.IsSome))
+            foreach (var option in options.Where(o => o.HasValue))
                 yield return option.Value;
         }
 

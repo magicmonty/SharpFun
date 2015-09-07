@@ -260,21 +260,21 @@ namespace Pagansoft.Functional
         }
 
         [Test]
-        public void Else_Returns_Some_For_Option_Some_And_Predicate_False()
+        public void Unless_Returns_Some_For_Option_Some_And_Predicate_False()
         {
-            Option.Some(5).Else(v => v > 10).ShouldBe(Option.Some(5));
+            Option.Some(5).Unless(v => v > 10).ShouldBe(Option.Some(5));
         }
 
         [Test]
-        public void Else_Returns_None_For_Option_Some_And_Predicate_True()
+        public void Unless_Returns_None_For_Option_Some_And_Predicate_True()
         {
-            Option.Some(11).Else(v => v > 10).ShouldBe(Option.None<int>());
+            Option.Some(11).Unless(v => v > 10).ShouldBe(Option.None<int>());
         }
 
         [Test]
-        public void Else_Returns_None_For_Option_None()
+        public void Unless_Returns_None_For_Option_None()
         {
-            Option.None<int>().Else(_ => true).ShouldBe(Option.None<int>());
+            Option.None<int>().Unless(_ => true).ShouldBe(Option.None<int>());
         }
 
         [Test]
