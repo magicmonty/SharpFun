@@ -371,7 +371,7 @@ namespace Pagansoft.Functional
         /// <param name="option">Option.</param>
         /// <param name="predicate">Predicate.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
-        public static Option<T> Else<T>(this Option<T> option, Func<T, bool> predicate)
+        public static Option<T> Unless<T>(this Option<T> option, Func<T, bool> predicate)
         {
             Contract.Requires(option != null);
             Contract.Requires(predicate != null);
