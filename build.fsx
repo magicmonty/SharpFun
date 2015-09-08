@@ -5,14 +5,18 @@ open Fake
 open Fake.Paket
 
 // Properties
-let buildDir = "./build"
-let releaseDir = buildDir @@ "release"
-let testDir = buildDir @@ "test"
-let deployDir = buildDir @@ "deploy"
+let testDir = "Test/bin/Debug"
+let deployDir = "deploy"
 
 // Targets
 Target "Clean" (fun _ ->
-  CleanDir buildDir
+  !!"**/bin"
+  |> DeleteDirs
+
+  !!"**/obj"
+  |> DeleteDirs
+
+  DeleteDir deployDir
 )
 
 Target "Default" (fun _ ->
@@ -21,15 +25,13 @@ Target "Default" (fun _ ->
 
 Target "BuildRelease" (fun _ ->
     !!"*.sln"
-    |> MSBuildReleaseExt releaseDir ["Platform", "Any CPU"] "Build"
+    |> MSBuildReleaseExt "" ["Platform", "Any CPU"] "Build"
     |> Log "ReleaseBuild-Output"
 )
 
 Target "BuildDebug" (fun _ ->
     !!"*.sln"
-    |> MSBuild testDir "Build" [
-      ("Configuration", "Debug")
-      ("Platform", "Any CPU")]
+    |> MSBuild "" "Build" ["Platform", "Any CPU"]
     |> Log "DebugBuild-Output: "
 )
 
@@ -43,9 +45,9 @@ Target "Test" (fun _ ->
 Target "CreatePackage" (fun _ ->
     Pack(fun p ->
         { p with OutputPath = deployDir
-                 TemplateFile = "Functional/Functional.paket.template"
-                 WorkingDir = "Functional"
-                 Version = GetAssemblyVersionString(releaseDir @@ "Pagansoft.Functional.dll")
+                 TemplateFile = "paket.template"
+                 WorkingDir = "."
+                 Version = GetAssemblyVersionString("Functional/bin/Release/Pagansoft.Functional.dll")
                  ToolPath = ".paket/paket.exe" })
 )
 

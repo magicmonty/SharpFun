@@ -31,7 +31,9 @@ namespace Pagansoft.Functional
     /// <summary>
     /// Represents an exception with additional context information
     /// </summary>
+#if !PORTABLE
     [Serializable]
+#endif
     public class ExceptionWithContext : Exception
     {
         private readonly Dictionary<string, object> _context;
@@ -66,12 +68,14 @@ namespace Pagansoft.Functional
             _context = context ?? new Dictionary<string, object>();
         }
 
+#if !PORTABLE
         /// <inheritdoc />
         protected ExceptionWithContext(SerializationInfo info, StreamingContext streamingContext)
             : base(info, streamingContext)
         {
             _context = (Dictionary<string, object>)info.GetValue("Context", typeof(Dictionary<string, object>));
         }
+#endif
 
         /// <summary>Gets a value from the exception context.</summary>
         /// <returns>
@@ -95,11 +99,13 @@ namespace Pagansoft.Functional
             }
         }
 
+#if !PORTABLE
         /// <inheritdoc />
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             base.GetObjectData(info, context);
             info.AddValue("Context", _context);
         }
+#endif
     }
 }

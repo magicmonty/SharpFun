@@ -291,7 +291,7 @@ namespace Pagansoft.Functional
 #if CONTRACTS
             Contract.Ensures(Contract.Result<Option<TResult>>() != null);
 #endif
-            return !typeof(TResult).IsValueType && value == null
+            return value == null
                 ? Option.None<TResult>()
                 : Option.Some(value);
         }

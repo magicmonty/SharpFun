@@ -19,4 +19,6 @@ releaseNotes
     - Extension method IEnumerable<T>.OptionValues is now null safe
   1.0.0: Initial Release with an Option type
 files
-  ../build/release/Pagansoft.Functional.dll ==> lib
+  Functional/bin/Release/Pagansoft.Functional.dll ==> lib/net40
+  Functional.Net35/bin/Release/Pagansoft.Functional.dll ==> lib/net35
+  Functional.Portable/bin/Release/Pagansoft.Functional.dll ==> lib/portable-wpa+windows8+net45
