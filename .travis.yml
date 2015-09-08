@@ -8,6 +8,7 @@ script:
 install:
   - echo "Do not install anything"
 before_deploy:
+  - ls .
   - ls ./deploy
 deploy:
   skip_cleanup: true
