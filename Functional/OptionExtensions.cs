@@ -1,5 +1,4 @@
-﻿//
-// OptionExtensions.cs
+﻿// OptionExtensions.cs
 //
 // Author:
 //       Martin Gondermann <magicmonty@pagansoft.de>
@@ -24,7 +23,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+#if CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 
 namespace Pagansoft.Functional
 {
@@ -40,12 +41,14 @@ namespace Pagansoft.Functional
         /// <param name="option">The option.</param>
         /// <param name="someAction">The action to invoke.</param>
         /// <typeparam name="T">The type of the option value.</typeparam>
+        /// <returns>The option itself for chaining calls</returns>
         public static Option<T> Do<T>(this Option<T> option, Action<T> someAction)
         {
+#if CONTRACTS
             Contract.Requires(option != null);
             Contract.Requires(someAction != null);
             Contract.Ensures(Contract.Result<Option<T>>() != null);
-
+#endif
             if (option.HasValue)
                 someAction(option.Value);
 
@@ -58,62 +61,71 @@ namespace Pagansoft.Functional
         /// </summary>
         /// <param name="option">The option.</param>
         /// <param name="noneAction">The action to invoke.</param>
+        /// <typeparam name="T">The type of the option value.</typeparam>
+        /// <returns>The option itself for chaining calls</returns>
         public static Option<T> OtherwiseDo<T>(this Option<T> option, Action noneAction)
         {
+#if CONTRACTS
             Contract.Requires(option != null);
             Contract.Requires(noneAction != null);
             Contract.Ensures(Contract.Result<Option<T>>() != null);
-
+#endif
             if (option.HasNoValue)
                 noneAction();
-            
+
             return option;
         }
 
         /// <summary>
         /// Runs the specified <paramref name="action"/> if the <paramref name="option"/> matches.
         /// </summary>
-        /// <param name="option">Option.</param>
+        /// <param name="option">The Option to match on.</param>
         /// <param name="action">The action to run, if the option matches a Some.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <returns>The option itself for chaining calls</returns>
         public static Option<T> Match<T>(this Option<T> option, Action<T> action)
         {
+#if CONTRACTS
             Contract.Requires(option != null);
             Contract.Requires(action != null);
             Contract.Ensures(Contract.Result<Option<T>>() != null);
-
+#endif
             return option.Do(action);
         }
 
         /// <summary>
         /// Runs the specified <paramref name="action"/> if the <paramref name="option"/> matches.
         /// </summary>
-        /// <param name="option">Option.</param>
+        /// <param name="option">The Option to match on.</param>
         /// <param name="action">The action to run, if the option matches a None.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <returns>The option itself for chaining calls</returns>
         public static Option<T> Match<T>(this Option<T> option, Action action)
         {
+#if CONTRACTS
             Contract.Requires(option != null);
             Contract.Requires(action != null);
             Contract.Ensures(Contract.Result<Option<T>>() != null);
-
+#endif
             return option.OtherwiseDo(action);
         }
 
         /// <summary>
         /// Runs the matching action for the given <paramref name="option"/>.
         /// </summary>
-        /// <param name="option">Option.</param>
+        /// <param name="option">The Option to match on.</param>
         /// <param name="someAction">The action to run, if the option matches a Some.</param>
         /// <param name="noneAction">The action to run, if the option matches a None.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <returns>The option itself for chaining calls</returns>
         public static Option<T> Match<T>(this Option<T> option, Action<T> someAction, Action noneAction)
         {
+#if CONTRACTS
             Contract.Requires(option != null);
             Contract.Requires(someAction != null);
             Contract.Requires(noneAction != null);
             Contract.Ensures(Contract.Result<Option<T>>() != null);
-
+#endif
             return option
                 .Do(someAction)
                 .OtherwiseDo(noneAction);
@@ -123,18 +135,20 @@ namespace Pagansoft.Functional
         /// Transforms the value of the input <paramref name="option"/> with the help of 
         /// the <paramref name="transformation"/> function into a new option of type <typeparamref name="TResult" />
         /// </summary>
-        /// <param name="option">Option.</param>
+        /// <param name="option">The Option to transform.</param>
         /// <param name="transformation">The transformation function.</param>
         /// <typeparam name="TInput">The type of the input option.</typeparam>
         /// <typeparam name="TResult">The type of the result option.</typeparam>
+        /// <returns>An option with the containing type <typeparam name="TResult" /></returns>
         public static Option<TResult> Map<TInput, TResult>(
             this Option<TInput> option,
             Func<TInput, TResult> transformation)
         {
+#if CONTRACTS
             Contract.Requires(option != null);
             Contract.Requires(transformation != null);
             Contract.Ensures(Contract.Result<Option<TResult>>() != null);
-
+#endif
             return option.Bind(v => transformation(v).AsOption());
         }
 
@@ -143,18 +157,20 @@ namespace Pagansoft.Functional
         /// the <paramref name="transformation"/> function into a new option of type <typeparamref name="TResult" />
         /// (alias for <see cref="OptionExtensions.Map{TInput, TResult}"/>
         /// </summary>
-        /// <param name="option">Option.</param>
+        /// <param name="option">The Option to transform.</param>
         /// <param name="transformation">The transformation function.</param>
         /// <typeparam name="TInput">The type of the input option.</typeparam>
         /// <typeparam name="TResult">The type of the result option.</typeparam>
+        /// <returns>An option with the containing type <typeparam name="TResult" /></returns>
         public static Option<TResult> Select<TInput, TResult>(
             this Option<TInput> option,
             Func<TInput, TResult> transformation)
         {
+#if CONTRACTS
             Contract.Requires(option != null);
             Contract.Requires(transformation != null);
             Contract.Ensures(Contract.Result<Option<TResult>>() != null);
-
+#endif
             return option.Map(transformation);
         }
 
@@ -163,18 +179,20 @@ namespace Pagansoft.Functional
         /// the <paramref name="transformation"/> function into a new option of type <typeparamref name="TResult" />
         /// If the transformation function throws an exception, a None will be returned
         /// </summary>
-        /// <param name="option">Option.</param>
+        /// <param name="option">The Option to transform.</param>
         /// <param name="transformation">The transformation function.</param>
         /// <typeparam name="TInput">The type of the input option.</typeparam>
         /// <typeparam name="TResult">The type of the result option.</typeparam>
+        /// <returns>An option with the containing type <typeparam name="TResult" /></returns>
         public static Option<TResult> TryMap<TInput, TResult>(
             this Option<TInput> option,
             Func<TInput, TResult> transformation)
         {
+#if CONTRACTS
             Contract.Requires(option != null);
             Contract.Requires(transformation != null);
             Contract.Ensures(Contract.Result<Option<TResult>>() != null);
-
+#endif
             try
             {
                 return option.Map(transformation);
@@ -191,18 +209,20 @@ namespace Pagansoft.Functional
         /// If the transformation function throws an exception, a None will be returned
         /// (alias for <see cref="OptionExtensions.TryMap{TInput, TResult}"/>)
         /// </summary>
-        /// <param name="option">Option.</param>
+        /// <param name="option">The Option to transform.</param>
         /// <param name="transformation">The transformation function.</param>
         /// <typeparam name="TInput">The type of the input option.</typeparam>
         /// <typeparam name="TResult">The type of the result option.</typeparam>
+        /// <returns>An option with the containing type <typeparam name="TResult" /></returns>
         public static Option<TResult> TrySelect<TInput, TResult>(
             this Option<TInput> option,
             Func<TInput, TResult> transformation)
         {
+#if CONTRACTS
             Contract.Requires(option != null);
             Contract.Requires(transformation != null);
             Contract.Ensures(Contract.Result<Option<TResult>>() != null);
-
+#endif
             return option.TryMap(transformation);
         }
 
@@ -210,18 +230,20 @@ namespace Pagansoft.Functional
         /// Transforms the value of the input <paramref name="option"/> with the help of 
         /// the <paramref name="transformation"/> function into a new option of type <typeparamref name="TResult" />
         /// </summary>
-        /// <param name="option">Option.</param>
+        /// <param name="option">The Option to transform.</param>
         /// <param name="transformation">The transformation function.</param>
         /// <typeparam name="TInput">The type of the input option.</typeparam>
         /// <typeparam name="TResult">The type of the result option.</typeparam>
+        /// <returns>An option with the containing type <typeparam name="TResult" /></returns>
         public static Option<TResult> Bind<TInput, TResult>(
             this Option<TInput> option,
             Func<TInput, Option<TResult>> transformation)
         {
+#if CONTRACTS
             Contract.Requires(option != null);
             Contract.Requires(transformation != null);
             Contract.Ensures(Contract.Result<Option<TResult>>() != null);
-
+#endif
             return option.HasValue
                 ? transformation(option.Value)
                 : Option.None<TResult>();
@@ -232,18 +254,20 @@ namespace Pagansoft.Functional
         /// the <paramref name="transformation"/> function into a new option of type <typeparamref name="TResult" />
         /// If the transformation function throws an exception, a None will be returned
         /// </summary>
-        /// <param name="option">Option.</param>
+        /// <param name="option">The Option to transform.</param>
         /// <param name="transformation">The transformation function.</param>
         /// <typeparam name="TInput">The type of the input option.</typeparam>
         /// <typeparam name="TResult">The type of the result option.</typeparam>
+        /// <returns>An option with the containing type <typeparam name="TResult" /></returns>
         public static Option<TResult> TryBind<TInput, TResult>(
             this Option<TInput> option,
             Func<TInput, Option<TResult>> transformation)
         {
+#if CONTRACTS
             Contract.Requires(option != null);
             Contract.Requires(transformation != null);
             Contract.Ensures(Contract.Result<Option<TResult>>() != null);
-
+#endif
             try
             {
                 return option.Bind(transformation);
@@ -264,15 +288,16 @@ namespace Pagansoft.Functional
         /// <returns>The option.</returns>
         public static Option<TResult> AsOption<TResult>(this TResult value)
         {
+#if CONTRACTS
             Contract.Ensures(Contract.Result<Option<TResult>>() != null);
-
+#endif
             return !typeof(TResult).IsValueType && value == null
                 ? Option.None<TResult>()
                 : Option.Some(value);
         }
 
         /// <summary>
-        /// Transforms a nullable value into an option.
+        /// Transforms a <see cref="Nullable"/> value into an option.
         /// If the value is null,
         /// then a None will be returned, otherwise a Some
         /// </summary>
@@ -281,10 +306,11 @@ namespace Pagansoft.Functional
         /// <returns>The option.</returns>
         public static Option<TResult> AsOption<TResult>(this TResult? value) where TResult : struct
         {
+#if CONTRACTS
             Contract.Ensures(Contract.Result<Option<TResult>>() != null);
-
+#endif
             return value.HasValue
-                ? Option.Some<TResult>((TResult)value)
+                ? Option.Some((TResult)value)
                 : Option.None<TResult>();
         }
 
@@ -300,14 +326,15 @@ namespace Pagansoft.Functional
         /// <returns>The option.</returns>
         public static Option<TResult> AsOption<TResult>(this TResult value, Func<TResult, bool> predicate)
         {
+#if CONTRACTS
             Contract.Requires(predicate != null);
             Contract.Ensures(Contract.Result<Option<TResult>>() != null);
-
+#endif
             return value.AsOption().Where(predicate);
         }
 
         /// <summary>
-        /// Transforms a nullable value into an option.
+        /// Transforms a <see cref="Nullable"/> value into an option.
         /// If the value is null,
         /// then a None will be returned, otherwise a Some or a None is returned
         /// depending of the return value of the predicate
@@ -318,67 +345,87 @@ namespace Pagansoft.Functional
         /// <returns>The option.</returns>
         public static Option<TResult> AsOption<TResult>(this TResult? value, Func<TResult, bool> predicate) where TResult : struct
         {
+#if CONTRACTS
             Contract.Requires(predicate != null);
             Contract.Ensures(Contract.Result<Option<TResult>>() != null);
-
+#endif
             return value.AsOption().Where(predicate);
         }
 
         /// <summary>Returns the option if the predicate matches on the value</summary>
-        /// <param name="option">Option.</param>
+        /// <param name="option">The Option to filter.</param>
         /// <param name="predicate">Predicate function which is evaluated</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <returns>
+        /// <see cref="Option.Some{T}">Some</see> value, if the predicate matches,
+        /// otherwise <see cref="Option.None{T}">no value</see>
+        /// </returns>
         public static Option<T> Where<T>(this Option<T> option, Func<T, bool> predicate)
         {
+#if CONTRACTS
             Contract.Requires(option != null);
             Contract.Requires(predicate != null);
             Contract.Ensures(Contract.Result<Option<T>>() != null);
-
+#endif
             return option.HasValue && predicate(option.Value)
                 ? option
                 : Option.None<T>();
         }
 
         /// <summary>Returns the option if the predicate matches on the value (alias for <see cref="OptionExtensions.Where{T}"/>)</summary>
-        /// <param name="option">Option.</param>
+        /// <param name="option">The Option to filter.</param>
         /// <param name="predicate">Predicate function which is evaluated</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <returns>
+        /// <see cref="Option.Some{T}">Some</see> value, if the predicate matches,
+        /// otherwise <see cref="Option.None{T}">no value</see>
+        /// </returns>
         public static Option<T> If<T>(this Option<T> option, Func<T, bool> predicate)
         {
+#if CONTRACTS
             Contract.Requires(option != null);
             Contract.Requires(predicate != null);
             Contract.Ensures(Contract.Result<Option<T>>() != null);
-
+#endif
             return option.Where(predicate);
         }
 
         /// <summary>Returns the option if the predicate didn't match on the value</summary>
-        /// <param name="option">Option.</param>
-        /// <param name="predicate">Predicate.</param>
+        /// <param name="option">The Option to filter.</param>
+        /// <param name="predicate">The filter predicate.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <returns>
+        /// <see cref="Option.None{T}">No value</see>, if the predicate matches,
+        /// otherwise <see cref="Option.Some{T}">some value</see>
+        /// </returns>
         public static Option<T> WhereNot<T>(this Option<T> option, Func<T, bool> predicate)
         {
+#if CONTRACTS
             Contract.Requires(option != null);
             Contract.Requires(predicate != null);
             Contract.Ensures(Contract.Result<Option<T>>() != null);
-
+#endif
             return option.HasValue && !predicate(option.Value)
                 ? option
                 : Option.None<T>();
         }
 
         /// <summary>Returns the option if the predicate didn't match on the value (alias for <see cref="OptionExtensions.WhereNot{T}"/>)</summary>
-        /// <param name="option">Option.</param>
-        /// <param name="predicate">Predicate.</param>
+        /// <param name="option">The Option to filter.</param>
+        /// <param name="predicate">The filter predicate.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <returns>
+        /// <see cref="Option.None{T}">No value</see>, if the predicate matches,
+        /// otherwise <see cref="Option.Some{T}">some value</see>
+        /// </returns>
         public static Option<T> Unless<T>(this Option<T> option, Func<T, bool> predicate)
         {
+#if CONTRACTS
             Contract.Requires(option != null);
             Contract.Requires(predicate != null);
             Contract.Ensures(Contract.Result<Option<T>>() != null);
-
+#endif
             return option.WhereNot(predicate);
         }
     }
 }
-

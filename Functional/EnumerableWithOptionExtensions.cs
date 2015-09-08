@@ -1,5 +1,4 @@
-﻿//
-// EnumerableWithOptionExtensions.cs
+﻿// EnumerableWithOptionExtensions.cs
 //
 // Author:
 //       Martin Gondermann <magicmonty@pagansoft.de>
@@ -23,10 +22,12 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System.Linq;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+#if CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 
 namespace Pagansoft.Functional
 {
@@ -44,17 +45,18 @@ namespace Pagansoft.Functional
         /// <typeparam name="T">The 1st type parameter.</typeparam>
         public static IEnumerable<T> OptionValues<T>(this IEnumerable<Option<T>> options)
         {
+#if CONTRACTS
             Contract.Ensures(Contract.Result<IEnumerable<T>>() != null);
-
+#endif
             if (options == null)
                 yield break;
-            
+
             foreach (var option in options.Where(o => o.HasValue))
                 yield return option.Value;
         }
 
         /// <summary>
-        /// Returns the values from all elements with all nones replaced by the given <paramref name="defaultValue"/>,
+        /// Returns the values from all elements with all <see cref="Option.None{T}"/> replaced by the given <paramref name="defaultValue"/>,
         /// </summary>
         /// <returns>The values of all elements with a value.</returns>
         /// <param name="options">The list of options.</param>
@@ -62,8 +64,9 @@ namespace Pagansoft.Functional
         /// <typeparam name="T">The 1st type parameter.</typeparam>
         public static IEnumerable<T> OptionValues<T>(this IEnumerable<Option<T>> options, T defaultValue)
         {
+#if CONTRACTS
             Contract.Ensures(Contract.Result<IEnumerable<T>>() != null);
-
+#endif
             if (options == null)
                 yield break;
 
@@ -79,11 +82,12 @@ namespace Pagansoft.Functional
         /// <typeparam name="T">The type of the elements of the enumerable.</typeparam>
         public static Option<T> FirstOrNone<T>(this IEnumerable<T> enumerable)
         {
+#if CONTRACTS
             Contract.Ensures(Contract.Result<Option<T>>() != null);
-
+#endif
             if (enumerable == null)
                 return Option.None<T>();
-            
+
             try
             {
                 return enumerable.First().AsOption();
@@ -102,8 +106,9 @@ namespace Pagansoft.Functional
         /// <typeparam name="T">The type of the elements of the enumerable.</typeparam>
         public static Option<T> LastOrNone<T>(this IEnumerable<T> enumerable)
         {
+#if CONTRACTS
             Contract.Ensures(Contract.Result<Option<T>>() != null);
-
+#endif
             if (enumerable == null)
                 return Option.None<T>();
 
@@ -118,4 +123,3 @@ namespace Pagansoft.Functional
         }
     }
 }
-

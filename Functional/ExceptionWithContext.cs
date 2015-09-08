@@ -1,5 +1,4 @@
-﻿//
-// ExceptionWithContext.cs
+﻿// ExceptionWithContext.cs
 //
 // Author:
 //       Martin Gondermann <magicmonty@pagansoft.de>
@@ -46,7 +45,7 @@ namespace Pagansoft.Functional
         /// Initializes a new instance of the <see cref="Pagansoft.Functional.ExceptionWithContext"/> class.
         /// </summary>
         /// <param name="context">The error context.</param>
-        public ExceptionWithContext(Dictionary<string, object> context) : this("", context) { }
+        public ExceptionWithContext(Dictionary<string, object> context) : this(string.Empty, context) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Pagansoft.Functional.ExceptionWithContext"/> class.
@@ -61,24 +60,19 @@ namespace Pagansoft.Functional
         /// <param name="message">The message.</param>
         /// <param name="innerException">The inner exception.</param>
         /// <param name="context">The error context.</param>
-        public ExceptionWithContext(string message, Exception innerException, Dictionary<string, object> context) 
+        public ExceptionWithContext(string message, Exception innerException, Dictionary<string, object> context)
             : base(message, innerException)
         {
             _context = context ?? new Dictionary<string, object>();
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Pagansoft.Functional.ExceptionWithContext"/> class.
-        /// This is the default serialization constructor
-        /// </summary>
-        /// <param name="info">Info.</param>
-        /// <param name="streamingContext">Streaming context.</param>
-        protected ExceptionWithContext(SerializationInfo info, StreamingContext streamingContext) 
+        /// <inheritdoc />
+        protected ExceptionWithContext(SerializationInfo info, StreamingContext streamingContext)
             : base(info, streamingContext)
         {
             _context = (Dictionary<string, object>)info.GetValue("Context", typeof(Dictionary<string, object>));
         }
-        
+
         /// <summary>Gets a value from the exception context.</summary>
         /// <returns>
         /// An <see cref="Option.Some{T}"/> with the value, if a value of the given <typeparamref name="TResult">type</typeparamref> with the given <paramref name="key"/> was found,
@@ -109,4 +103,3 @@ namespace Pagansoft.Functional
         }
     }
 }
-

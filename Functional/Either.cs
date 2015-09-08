@@ -1,5 +1,4 @@
-﻿//
-// Either.cs
+﻿// Either.cs
 //
 // Author:
 //       Martin Gondermann <magicmonty@pagansoft.de>
@@ -27,27 +26,26 @@ using System;
 
 namespace Pagansoft.Functional
 {
-    /// <summary>
-    /// Represents a type, which can have either one of two given types
-    /// </summary>
+    /// <summary>Represents a type, which can have either one of two given types</summary>
     /// <example>
-    /// <code><![CDATA[
+    /// <para><code><![CDATA[
     /// // Prints: "Success: 42"
     /// var success = Either.Left<int, Exception>(42);
     /// success.Match(
     ///   r => Console.WriteLine("Success: {0}", r),
     ///   ex => Console.WriteLine(ex.Message));
-    /// </code>
-    ///
-    /// <code>
+    /// </code></para>
+    /// <para><code>
     /// // Prints: "An error happened!"
     /// var error = Either.Right<int, Exception>(new System.Exception("An error happened!"));
     /// success.Match(
     ///   r => Console.WriteLine("Success: {0}", r),
     ///   ex => Console.WriteLine(ex.Message));
-    /// ]]></code>
+    /// ]]></code></para>
     /// </example>
-    public abstract class Either<TLeft, TRight>
+    /// <typeparam name="TLeft">The type of the left value</typeparam>
+    /// <typeparam name="TRight">The type of the right value</typeparam>
+    public abstract class Either<TLeft, TRight> : IEquatable<Either<TLeft, TRight>>
     {
         /// <summary>
         /// Returns the value of the specified function based on the internal state.
@@ -55,6 +53,7 @@ namespace Pagansoft.Functional
         /// <param name="onLeft">This function is called, if the internal value is a <typeparamref name="TLeft" />.</param>
         /// <param name="onRight">This function is called, if the internal value is a <typeparamref name="TRight" />.</param>
         /// <typeparam name="TResult">The type of the result.</typeparam>
+        /// <returns>A value of type <typeparamref name="TResult"/></returns>
         public abstract TResult Case<TResult>(Func<TLeft, TResult> onLeft, Func<TRight, TResult> onRight);
 
         /// <summary>
@@ -78,17 +77,16 @@ namespace Pagansoft.Functional
 
         #region Equality members
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public bool Equals(Either<TLeft, TRight> other)
         {
             if (ReferenceEquals(null, other))
                 return false;
 
-            return ReferenceEquals(this, other) 
-                || (IsLeftValueEqual(other) && IsRightValueEqual(other));
+            return ReferenceEquals(this, other) || (IsLeftValueEqual(other) && IsRightValueEqual(other));
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override bool Equals(object obj)
         {
             return Equals(obj as Either<TLeft, TRight>);
@@ -103,15 +101,19 @@ namespace Pagansoft.Functional
             }
         }
 
-        /// <param name="leftValue">Left value.</param>
-        /// <param name="rightValue">Right value.</param>
+        /// <summary>Implements the operator ==.</summary>
+        /// <param name="leftValue">The left value.</param>
+        /// <param name="rightValue">The right value.</param>
+        /// <returns>The result of the operator.</returns>
         public static bool operator ==(Either<TLeft, TRight> leftValue, Either<TLeft, TRight> rightValue)
         {
             return Equals(leftValue, rightValue);
         }
 
-        /// <param name="leftValue">Left value.</param>
-        /// <param name="rightValue">Right value.</param>
+        /// <summary>Implements the operator !=.</summary>
+        /// <param name="leftValue">The left value.</param>
+        /// <param name="rightValue">The right value.</param>
+        /// <returns>The result of the operator.</returns>
         public static bool operator !=(Either<TLeft, TRight> leftValue, Either<TLeft, TRight> rightValue)
         {
             return !(leftValue == rightValue);
@@ -142,7 +144,7 @@ namespace Pagansoft.Functional
         private sealed class EitherLeft<TLeft, TRight> : Either<TLeft, TRight>
         {
             private readonly TLeft _value;
-                        
+
             public EitherLeft(TLeft value)
             {
                 _value = value;
@@ -177,7 +179,7 @@ namespace Pagansoft.Functional
 
                 if (other.GetType() != GetType())
                     return false;
-                
+
                 return Equals(_value, ((EitherLeft<TLeft, TRight>)other)._value);
             }
 
@@ -198,7 +200,7 @@ namespace Pagansoft.Functional
                     return _value != null ? _value.GetHashCode() : 0;
                 }
             }
-                
+
             #endregion
 
             public override string ToString()
@@ -237,7 +239,7 @@ namespace Pagansoft.Functional
             {
                 onRight(_value);
             }
-                
+
             protected override bool IsLeftValueEqual(Either<TLeft, TRight> other)
             {
                 return !ReferenceEquals(null, other) && (other.GetType() == GetType());
@@ -278,10 +280,11 @@ namespace Pagansoft.Functional
         /// <summary>
         /// Creates a left value
         /// </summary>
-        /// <param name="value">Value.</param>
-        /// <typeparam name="TLeft">The 1st type parameter.</typeparam>
-        /// <typeparam name="TRight">The 2nd type parameter.</typeparam>
-        public static Either<TLeft, TRight> Left<TLeft, TRight>(TLeft value) 
+        /// <param name="value">The left value.</param>
+        /// <typeparam name="TLeft">The type of the left value.</typeparam>
+        /// <typeparam name="TRight">The type of the right value.</typeparam>
+        /// <returns>An <see cref="Either{TLeft,TRight}"/> containing a left value</returns>
+        public static Either<TLeft, TRight> Left<TLeft, TRight>(TLeft value)
         {
             return new EitherLeft<TLeft, TRight>(value);
         }
@@ -289,10 +292,13 @@ namespace Pagansoft.Functional
         /// <summary>
         /// Creates a right value
         /// </summary>
-        public static Either<TLeft, TRight> Right<TLeft, TRight>(TRight value) 
+        /// <param name="value">The right value.</param>
+        /// <typeparam name="TLeft">The type of the left value.</typeparam>
+        /// <typeparam name="TRight">The type of the right value.</typeparam>
+        /// <returns>An <see cref="Either{TLeft,TRight}"/> containing a right value</returns>
+        public static Either<TLeft, TRight> Right<TLeft, TRight>(TRight value)
         {
             return new EitherRight<TLeft, TRight>(value);
         }
     }
 }
-

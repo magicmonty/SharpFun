@@ -1,5 +1,4 @@
-﻿//
-// Option.cs
+﻿// Option.cs
 //
 // Author:
 //       Martin Gondermann <magicmonty@pagansoft.de>
@@ -24,11 +23,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+#if CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 
 namespace Pagansoft.Functional
 {
     /// <summary>Base class for the Option Monad</summary>
+    /// <typeparam name="T">The type of the contained value</typeparam>
     public abstract class Option<T> : IEquatable<Option<T>>
     {
         /// <summary>Gets a value indicating whether this instance represents some value.</summary>
@@ -78,11 +80,14 @@ namespace Pagansoft.Functional
             return 0;
         }
 
-        /// <param name="value">Value.</param>
+        /// <summary>Performs an implicit conversion from <see cref="T"/> to <see cref="Option{T}"/>.</summary>
+        /// <param name="value">The value to convert.</param>
+        /// <returns>The result of the conversion.</returns>
         public static implicit operator Option<T>(T value)
         {
+#if CONTRACTS
             Contract.Ensures(Contract.Result<Option<T>>() != null);
-
+#endif
             return ReferenceEquals(null, value)
                 ? Option.None<T>()
                 : Option.Some(value);
@@ -92,7 +97,6 @@ namespace Pagansoft.Functional
     /// <summary>Factory class for fluent construction of an option monad</summary>
     public static class Option
     {
-        /// <summary>Represents some result</summary>
         private sealed class OptionSome<TResult> : Option<TResult>
         {
             public OptionSome(TResult value)
@@ -113,9 +117,9 @@ namespace Pagansoft.Functional
 
             public override bool Equals(Option<TResult> other)
             {
-                if (ReferenceEquals(null, other) || other.GetType() != this.GetType())
+                if (ReferenceEquals(null, other) || other.GetType() != GetType())
                     return false;
-                
+
                 if (ReferenceEquals(this, other))
                     return true;
 
@@ -133,14 +137,14 @@ namespace Pagansoft.Functional
             }
         }
 
-        /// <summary>Represents no result</summary>
         private sealed class OptionNone<TResult> : Option<TResult>
         {
             public override bool HasValue { get { return false; } }
 
             public override TResult Value
             {
-                get {
+                get
+                {
                     throw new ArgumentException("A None Option has no value!");
                 }
             }
@@ -153,7 +157,7 @@ namespace Pagansoft.Functional
             public override bool Equals(Option<TResult> other)
             {
                 return !ReferenceEquals(null, other)
-                && other.GetType() == this.GetType();
+                && other.GetType() == GetType();
             }
 
             public override int GetHashCode()
@@ -170,22 +174,24 @@ namespace Pagansoft.Functional
         /// <summary>Creates an option which represents the specified value.</summary>
         /// <param name="value">The value, this option represent.</param>
         /// <typeparam name="T">The type of the represented value.</typeparam>
+        /// <returns>An option with a value</returns>
         public static Option<T> Some<T>(T value)
         {
+#if CONTRACTS
             Contract.Ensures(Contract.Result<Option<T>>() != null);
-
+#endif
             return new OptionSome<T>(value);
         }
 
         /// <summary>Creates an option which represents no value of a given type.</summary>
         /// <typeparam name="T">The type of the represented value.</typeparam>
+        /// <returns>An option without a value</returns>
         public static Option<T> None<T>()
         {
+#if CONTRACTS
             Contract.Ensures(Contract.Result<Option<T>>() != null);
-
+#endif
             return new OptionNone<T>();
         }
     }
-
 }
-

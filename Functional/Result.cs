@@ -1,5 +1,4 @@
-﻿//
-// Result.cs
+﻿// Result.cs
 //
 // Author:
 //       Martin Gondermann <magicmonty@pagansoft.de>
@@ -33,6 +32,7 @@ namespace Pagansoft.Functional
     /// A result is a special case of an <see cref="Either{TLeft, TRight}"/>, where the
     /// left value is a success value and the right value is an <see cref="ExceptionWithContext"/>.
     /// </summary>
+    /// <typeparam name="TSuccess">The type of the success value</typeparam>
     public abstract class Result<TSuccess> : Either<TSuccess, ExceptionWithContext>
     {
         /// <inheritdoc />
@@ -53,7 +53,7 @@ namespace Pagansoft.Functional
         {
             /* intentionally left blank */
         }
-            
+
         /// <summary>
         /// Executes the <paramref name="onSuccess"/> method, if the instance is a Success value.
         /// </summary>
@@ -82,7 +82,7 @@ namespace Pagansoft.Functional
         {
             private readonly TSuccess _value;
 
-            public SuccessResult (TSuccess value)
+            public SuccessResult(TSuccess value)
             {
                 _value = value;
             }
@@ -119,7 +119,7 @@ namespace Pagansoft.Functional
 
             public override string ToString()
             {
-                return _value == null ? "" : _value.ToString();
+                return _value == null ? string.Empty : _value.ToString();
             }
         }
 
@@ -127,7 +127,7 @@ namespace Pagansoft.Functional
         {
             private readonly ExceptionWithContext _failure;
 
-            public FailureResult (ExceptionWithContext failure)
+            public FailureResult(ExceptionWithContext failure)
             {
                 _failure = failure;
             }
@@ -164,7 +164,7 @@ namespace Pagansoft.Functional
 
             public override string ToString()
             {
-                return _failure == null ? "" : _failure.ToString();
+                return _failure == null ? string.Empty : _failure.ToString();
             }
         }
 
@@ -173,6 +173,7 @@ namespace Pagansoft.Functional
         /// </summary>
         /// <param name="value">The success value.</param>
         /// <typeparam name="TSuccess">The type of the success value.</typeparam>
+        /// <returns>A new Success Value</returns>
         public static Result<TSuccess> Success<TSuccess>(TSuccess value)
         {
             return new SuccessResult<TSuccess>(value);
@@ -183,6 +184,7 @@ namespace Pagansoft.Functional
         /// </summary>
         /// <param name="failure">The failure exception.</param>
         /// <typeparam name="TSuccess">The type of the success value.</typeparam>
+        /// <returns>A new Failure Value</returns>
         public static Result<TSuccess> Failure<TSuccess>(ExceptionWithContext failure)
         {
             return new FailureResult<TSuccess>(failure);
@@ -193,9 +195,10 @@ namespace Pagansoft.Functional
         /// </summary>
         /// <param name="failureMessage">The failure message.</param>
         /// <typeparam name="TSuccess">The type of the success value.</typeparam>
+        /// <returns>A new Failure Value</returns>
         public static Result<TSuccess> Failure<TSuccess>(string failureMessage)
         {
-            return Result.Failure<TSuccess>(new ExceptionWithContext(failureMessage, null));
+            return Failure<TSuccess>(new ExceptionWithContext(failureMessage, null));
         }
 
         /// <summary>
@@ -204,9 +207,10 @@ namespace Pagansoft.Functional
         /// <param name="failureMessage">The failure message.</param>
         /// <param name="context">The context values.</param>
         /// <typeparam name="TSuccess">The type of the success value.</typeparam>
+        /// <returns>A new Failure Value</returns>
         public static Result<TSuccess> Failure<TSuccess>(string failureMessage, Dictionary<string, object> context)
         {
-            return Result.Failure<TSuccess>(new ExceptionWithContext(failureMessage, context));
+            return Failure<TSuccess>(new ExceptionWithContext(failureMessage, context));
         }
 
         /// <summary>
@@ -216,10 +220,10 @@ namespace Pagansoft.Functional
         /// <param name="innerException">The inner exception.</param>
         /// <param name="context">The context values.</param>
         /// <typeparam name="TSuccess">The type of the success value.</typeparam>
+        /// <returns>A new Failure Value</returns>
         public static Result<TSuccess> Failure<TSuccess>(string failureMessage, Exception innerException, Dictionary<string, object> context)
         {
-            return Result.Failure<TSuccess>(new ExceptionWithContext(failureMessage, innerException, context));
+            return Failure<TSuccess>(new ExceptionWithContext(failureMessage, innerException, context));
         }
     }
 }
-
