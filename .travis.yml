@@ -7,14 +7,12 @@ script:
   - "./updateAndBuild.sh"
 install:
   - echo "Do not install anything"
-before_deploy:
-  - ls .
-  - ls ./deploy
 deploy:
   skip_cleanup: true
   provider: releases
   api_key:
     secure: DAM2nC8xCIpxiHuL5aTjfHjGVL3VNWztxGUfp74jaBkXBMtO5s75+RDNinF6kKroJCO+Y9wXQY7fN24slcGsiQcA9O9mKKhLV70iDnvL1x/SKM0HGVC3hQbWwFQcUoliR0hP2eTYPxLx5Otbb5zzWOjELR6cw/GiZgQd0qmb6QN9C+2KO22lWdV+m+xgAWtKj9GmepwuKDxKZmvU16893Uhb8pyRrcnqQTAOtNEf8zMjE93P1lt2yBsV8yeJJpNav8UFE0e4HY7Sk0tEs8WVf2KX+CZaEexLpGfbMKa4z73WhLoNspn8Jxup3erqNxxoZb/7/AX1DoXWJMubtLwp+zYetgJWyJVLYB/YqvIs3xf4xghQCvlrZ+JlNOj/wSiqfcr/ztUU/mM9Zue5H28VhLWnxHOd1Yic0dZPfbttYWnLdHKhEjuI8GZbddX2PFDoNp3tOZqXzrbSr4gLmCA3mBhK9932WwX3SA/RYJpfjCJw+M83UUpdFQ1Xx+/3EDbMJ25SwYQcHI5PgZuL5RPInCxh2XldG+sONDbhX2OCeT/ro/YnSMScjnQ5I5rwjdgieZMWAhohmd1Xu0YtwnigZViom/pya0DWBq1erpxGYMI/4z9/hPEyfeNtNDgSxXkoiSNn2zljHKl2DKB89XjZbxkV4SmNw+Goe7NlDGhCFEU=
+  file_glob: true
   file: ./deploy/Pagansoft.Functional.*.nupkg
   on:
     repo: magicmonty/SharpFun
