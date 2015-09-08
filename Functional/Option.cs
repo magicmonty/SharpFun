@@ -80,7 +80,7 @@ namespace Pagansoft.Functional
             return 0;
         }
 
-        /// <summary>Performs an implicit conversion from <see cref="T"/> to <see cref="Option{T}"/>.</summary>
+        /// <summary>Performs an implicit conversion from <see typeparamref="T"/> to <see cref="Option{T}"/>.</summary>
         /// <param name="value">The value to convert.</param>
         /// <returns>The result of the conversion.</returns>
         public static implicit operator Option<T>(T value)

@@ -8,6 +8,8 @@ tags data type,functional,option
 description
   Functional data types for C#
 releaseNotes
+  2.0.1:
+    - Adds multi platform support for .Net 3.5, .Net 4.0, Portable .Net 4.5 + Windows 8.0 + Windows Phone 8.1
   2.0.0:
     - Adds Either type
     - Adds Result type

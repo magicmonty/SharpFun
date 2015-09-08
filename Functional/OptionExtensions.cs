@@ -139,7 +139,7 @@ namespace Pagansoft.Functional
         /// <param name="transformation">The transformation function.</param>
         /// <typeparam name="TInput">The type of the input option.</typeparam>
         /// <typeparam name="TResult">The type of the result option.</typeparam>
-        /// <returns>An option with the containing type <typeparam name="TResult" /></returns>
+        /// <returns>An option with the containing type <typeparamref name="TResult" /></returns>
         public static Option<TResult> Map<TInput, TResult>(
             this Option<TInput> option,
             Func<TInput, TResult> transformation)
@@ -161,7 +161,7 @@ namespace Pagansoft.Functional
         /// <param name="transformation">The transformation function.</param>
         /// <typeparam name="TInput">The type of the input option.</typeparam>
         /// <typeparam name="TResult">The type of the result option.</typeparam>
-        /// <returns>An option with the containing type <typeparam name="TResult" /></returns>
+        /// <returns>An option with the containing type <typeparamref name="TResult" /></returns>
         public static Option<TResult> Select<TInput, TResult>(
             this Option<TInput> option,
             Func<TInput, TResult> transformation)
@@ -183,7 +183,7 @@ namespace Pagansoft.Functional
         /// <param name="transformation">The transformation function.</param>
         /// <typeparam name="TInput">The type of the input option.</typeparam>
         /// <typeparam name="TResult">The type of the result option.</typeparam>
-        /// <returns>An option with the containing type <typeparam name="TResult" /></returns>
+        /// <returns>An option with the containing type <typeparamref name="TResult" /></returns>
         public static Option<TResult> TryMap<TInput, TResult>(
             this Option<TInput> option,
             Func<TInput, TResult> transformation)
@@ -213,7 +213,7 @@ namespace Pagansoft.Functional
         /// <param name="transformation">The transformation function.</param>
         /// <typeparam name="TInput">The type of the input option.</typeparam>
         /// <typeparam name="TResult">The type of the result option.</typeparam>
-        /// <returns>An option with the containing type <typeparam name="TResult" /></returns>
+        /// <returns>An option with the containing type <typeparamref name="TResult" /></returns>
         public static Option<TResult> TrySelect<TInput, TResult>(
             this Option<TInput> option,
             Func<TInput, TResult> transformation)
@@ -234,7 +234,7 @@ namespace Pagansoft.Functional
         /// <param name="transformation">The transformation function.</param>
         /// <typeparam name="TInput">The type of the input option.</typeparam>
         /// <typeparam name="TResult">The type of the result option.</typeparam>
-        /// <returns>An option with the containing type <typeparam name="TResult" /></returns>
+        /// <returns>An option with the containing type <typeparamref name="TResult" /></returns>
         public static Option<TResult> Bind<TInput, TResult>(
             this Option<TInput> option,
             Func<TInput, Option<TResult>> transformation)
@@ -258,7 +258,7 @@ namespace Pagansoft.Functional
         /// <param name="transformation">The transformation function.</param>
         /// <typeparam name="TInput">The type of the input option.</typeparam>
         /// <typeparam name="TResult">The type of the result option.</typeparam>
-        /// <returns>An option with the containing type <typeparam name="TResult" /></returns>
+        /// <returns>An option with the containing type <typeparamref name="TResult" /></returns>
         public static Option<TResult> TryBind<TInput, TResult>(
             this Option<TInput> option,
             Func<TInput, Option<TResult>> transformation)

@@ -41,7 +41,7 @@ Thumbs.db
 
 .paket/paket.exe
 .fake/
-build/
+deploy/
 
 
 *.swp
