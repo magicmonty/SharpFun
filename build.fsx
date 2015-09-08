@@ -21,13 +21,15 @@ Target "Default" (fun _ ->
 
 Target "BuildRelease" (fun _ ->
     !!"*.sln"
-    |> MSBuildRelease releaseDir "Build"
+    |> MSBuildReleaseExt releaseDir ["Platform", "Any CPU"] "Build"
     |> Log "ReleaseBuild-Output"
 )
 
 Target "BuildDebug" (fun _ ->
     !!"*.sln"
-    |> MSBuildDebug testDir "Build"
+    |> MSBuild testDir "Build" [
+      ("Configuration", "Debug")
+      ("Platform", "Any CPU")]
     |> Log "DebugBuild-Output: "
 )
 
