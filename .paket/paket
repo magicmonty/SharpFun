@@ -1,6 +1,6 @@
 #!/bin/sh
 SCRIPT_PATH="`dirname \"$0\"`"
 SOLUTION_PATH="`( cd \"${SCRIPT_PATH}/..\" && pwd )`"
-mono $SOLUTION_PATH/.paket/paket.bootstrapper.exe --self --prefer-nuget
-mono $SOLUTION_PATH/.paket/paket.bootstrapper.exe --prefer-nuget
+mono $SOLUTION_PATH/.paket/paket.bootstrapper.exe --self
+mono $SOLUTION_PATH/.paket/paket.bootstrapper.exe
 mono $SOLUTION_PATH/.paket/paket.exe $1 $2 $3 $4 $5 $6 $7 $8 $9
