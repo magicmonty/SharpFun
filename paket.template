@@ -10,6 +10,8 @@ tags data type,functional,option
 description
   Functional data types for C#
 releaseNotes
+  2.0.4
+    - Fixes some issues with Option Equality
   2.0.3:
     - The DLL's are now signed
     - Added Documentation XMLs

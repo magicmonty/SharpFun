@@ -23,13 +23,15 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using NUnit.Framework;
 using System;
+using System.Diagnostics.CodeAnalysis;
+using NUnit.Framework;
 using Shouldly;
 
 namespace Pagansoft.Functional
 {
     [TestFixture]
+    [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Test names should be readable")]
     public class OptionTests
     {
         [Test]
@@ -71,7 +73,8 @@ namespace Pagansoft.Functional
         public void Value_Of_None_Should_Throw_Exception()
         {
             var sut = Option.None<int>();
-            Should.Throw<ArgumentException>(() => {
+            Should.Throw<ArgumentException>(() =>
+            {
                 var x = sut.Value;
             }).Message.ShouldBe("A None Option has no value!");
         }
@@ -159,10 +162,121 @@ namespace Pagansoft.Functional
         }
 
         [Test]
-        public void ToString_Of_None_Returns_None()
+        public void ToString_Of_None_Returns_EmptyString()
         {
-            Option.None<int>().ToString().ShouldBe("None");
+            Option.None<int>().ToString().ShouldBeEmpty();
+        }
+
+        [Test]
+        [SuppressMessage("ReSharper", "EqualExpressionComparison")]
+        public void Options_With_Same_Content_Should_Be_Equivalent()
+        {
+            (Option.Some("FOO") == Option.Some("FOO")).ShouldBe(true);
+            (Option.Some("FOO") != Option.Some("FOO")).ShouldBe(false);
+        }
+
+        [Test]
+        [SuppressMessage("ReSharper", "EqualExpressionComparison")]
+        public void Options_With_Different_Content_Should_Not_Be_Equivalent()
+        {
+            (Option.Some("FOO") == Option.Some("BAR")).ShouldBe(false);
+            (Option.Some("FOO") != Option.Some("BAR")).ShouldBe(true);
+        }
+
+        private class TestClass : IEquatable<TestClass>
+        {
+            private readonly string _content;
+
+            public TestClass(string content) { _content = content; }
+
+            #region Equality members
+
+            public bool Equals(TestClass other)
+            {
+                return !ReferenceEquals(null, other)
+                       && (ReferenceEquals(this, other) || string.Equals(_content, other._content));
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (ReferenceEquals(null, obj))
+                    return false;
+
+                if (ReferenceEquals(this, obj))
+                    return true;
+
+                var other = obj as TestClass;
+                return other != null && Equals(other);
+            }
+
+            public override int GetHashCode()
+            {
+                return _content != null ? _content.GetHashCode() : 0;
+            }
+
+            public static bool operator ==(TestClass left, TestClass right)
+            {
+                return Equals(left, right);
+            }
+
+            public static bool operator !=(TestClass left, TestClass right)
+            {
+                return !Equals(left, right);
+            }
+
+            #endregion
+        }
+
+        private class DerivedClass : TestClass, IEquatable<DerivedClass>
+        {
+            #region Equality members
+
+            public bool Equals(DerivedClass other)
+            {
+                return Equals(other as TestClass);
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (ReferenceEquals(null, obj))
+                    return false;
+
+                return ReferenceEquals(this, obj) || Equals(obj as TestClass);
+            }
+
+            public override int GetHashCode()
+            {
+                return base.GetHashCode();
+            }
+
+            public static bool operator ==(DerivedClass left, DerivedClass right)
+            {
+                return Equals(left, right);
+            }
+
+            public static bool operator !=(DerivedClass left, DerivedClass right)
+            {
+                return !Equals(left, right);
+            }
+
+            #endregion
+
+            public DerivedClass(string content) : base(content) { }
+        }
+
+        [Test]
+        public void Options_With_Equal_Derived_Classes_Should_Be_Equal()
+        {
+            var value = new TestClass("FOO");
+            var derived = new DerivedClass("FOO");
+
+            Equals(derived, value).ShouldBe(true);
+            Equals(value, derived).ShouldBe(true);
+            value.Equals(derived).ShouldBe(true);
+            derived.Equals(value).ShouldBe(true);
+
+            Option.Some(value).Equals(Option.Some(derived)).ShouldBe(true);
+            Option.Some(derived).Equals(Option.Some(value)).ShouldBe(true);
         }
     }
 }
-    
