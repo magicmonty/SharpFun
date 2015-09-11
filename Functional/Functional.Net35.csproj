@@ -17,16 +17,15 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
+    <OutputPath>bin\$(Configuration)\net35</OutputPath>
     <BaseIntermediateOutputPath>obj</BaseIntermediateOutputPath>
     <IntermediateOutputPath>$(BaseIntermediateOutputPath)\$(Configuration)\net35</IntermediateOutputPath>
-    <OutputPath>bin\$(Configuration)\net35</OutputPath>
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\$(Configuration)\net35</OutputPath>
     <BaseIntermediateOutputPath>obj</BaseIntermediateOutputPath>
@@ -34,6 +33,13 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
+    <DocumentationFile>bin\$(Configuration)\net35\Pagansoft.Functional.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>signingKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -46,6 +52,9 @@
     <Compile Include="Either.cs" />
     <Compile Include="Result.cs" />
     <Compile Include="ExceptionWithContext.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="signingKey.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

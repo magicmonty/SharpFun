@@ -10,6 +10,9 @@ tags data type,functional,option
 description
   Functional data types for C#
 releaseNotes
+  2.0.3:
+    - The DLL's are now signed
+    - Added Documentation XMLs
   2.0.2:
     - Additional platform .Net 45 as extra dependency
   2.0.1.1: Fixes incompatibility with NuGet
@@ -27,6 +30,10 @@ releaseNotes
   1.0.0: Initial Release with an Option type
 files
   Functional/bin/Release/net35/Pagansoft.Functional.dll ==> lib/net35
+  Functional/bin/Release/net35/Pagansoft.Functional.xml ==> lib/net35
   Functional/bin/Release/net40/Pagansoft.Functional.dll ==> lib/net40
+  Functional/bin/Release/net40/Pagansoft.Functional.xml ==> lib/net40
   Functional/bin/Release/net45/Pagansoft.Functional.dll ==> lib/net45
+  Functional/bin/Release/net45/Pagansoft.Functional.xml ==> lib/net45
   Functional/bin/Release/portable-wpa+windows8+net45/Pagansoft.Functional.dll ==> lib/portable-wpa+windows8+net45
+  Functional/bin/Release/portable-wpa+windows8+net45/Pagansoft.Functional.xml ==> lib/portable-wpa+windows8+net45

@@ -29,7 +29,6 @@
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\$(Configuration)\portable-wpa+windows8+net45\</OutputPath>
     <BaseIntermediateOutputPath>obj</BaseIntermediateOutputPath>
@@ -38,6 +37,13 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
+    <DocumentationFile>bin\$(Configuration)\portable-wpa+windows8+net45\Pagansoft.Functional.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>signingKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
@@ -50,6 +56,9 @@
     <Compile Include="Either.cs" />
     <Compile Include="Result.cs" />
     <Compile Include="ExceptionWithContext.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="signingKey.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
 </Project>

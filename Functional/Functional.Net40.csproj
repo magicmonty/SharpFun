@@ -32,7 +32,13 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
-    <DocumentationFile>bin\$(Configuration)\Pagansoft.Functional.xml</DocumentationFile>
+    <DocumentationFile>bin\$(Configuration)\net40\Pagansoft.Functional.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>signingKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -45,6 +51,9 @@
     <Compile Include="Either.cs" />
     <Compile Include="Result.cs" />
     <Compile Include="ExceptionWithContext.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="signingKey.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

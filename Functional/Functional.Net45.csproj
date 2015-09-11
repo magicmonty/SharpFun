@@ -26,7 +26,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\$(Configuration)\net45</OutputPath>
     <BaseIntermediateOutputPath>obj</BaseIntermediateOutputPath>
@@ -35,7 +34,14 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
+    <DocumentationFile>bin\$(Configuration)\net45\Pagansoft.Functional.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>signingKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -48,6 +54,9 @@
     <Compile Include="Either.cs" />
     <Compile Include="Result.cs" />
     <Compile Include="ExceptionWithContext.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="signingKey.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
