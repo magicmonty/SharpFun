@@ -1,13 +1,18 @@
 type file
 id Pagansoft.Functional
+title PagamSoft.Functional
 authors Martin Gondermann
 owners Martin Gondermann
 projectUrl http://github.com/magicmonty/SharpFun
 licenseUrl https://raw.githubusercontent.com/magicmonty/SharpFun/master/LICENSE.txt
+copyright 2015 by Martin Gondermann
 tags data type,functional,option
 description
   Functional data types for C#
 releaseNotes
+  2.0.2:
+    - Additional platform .Net 45 as extra dependency
+  2.0.1.1: Fixes incompatibility with NuGet
   2.0.1:
     - Adds multi platform support for .Net 3.5, .Net 4.0, Portable .Net 4.5 + Windows 8.0 + Windows Phone 8.1
   2.0.0:
@@ -21,6 +26,7 @@ releaseNotes
     - Extension method IEnumerable<T>.OptionValues is now null safe
   1.0.0: Initial Release with an Option type
 files
-  Functional/bin/Release/Pagansoft.Functional.dll ==> lib/net40
-  Functional.Net35/bin/Release/Pagansoft.Functional.dll ==> lib/net35
-  Functional.Portable/bin/Release/Pagansoft.Functional.dll ==> lib/portable-wpa+windows8+net45
+  Functional/bin/Release/net35/Pagansoft.Functional.dll ==> lib/net35
+  Functional/bin/Release/net40/Pagansoft.Functional.dll ==> lib/net40
+  Functional/bin/Release/net45/Pagansoft.Functional.dll ==> lib/net45
+  Functional/bin/Release/portable-wpa+windows8+net45/Pagansoft.Functional.dll ==> lib/portable-wpa+windows8+net45

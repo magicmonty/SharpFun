@@ -8,3 +8,15 @@
 [assembly: AssemblyCopyright("Martin Gondermann")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
+
+[assembly: AssemblyVersion("2.0.2")]
+[assembly: AssemblyFileVersion("2.0.2")]
+[assembly: AssemblyInformationalVersion("2.0.2")]
+
+namespace System
+{
+    internal static class AssemblyVersionInformation
+    {
+        internal const string Version = "2.0.2";
+    }
+}

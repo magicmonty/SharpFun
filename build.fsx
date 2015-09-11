@@ -47,7 +47,7 @@ Target "CreatePackage" (fun _ ->
         { p with OutputPath = deployDir
                  TemplateFile = "paket.template"
                  WorkingDir = "."
-                 Version = GetAssemblyVersionString("Functional/bin/Release/Pagansoft.Functional.dll")
+                 Version = GetAssemblyVersionString("Functional/bin/Release/net40/Pagansoft.Functional.dll")
                  ToolPath = ".paket/paket.exe" })
 )
 

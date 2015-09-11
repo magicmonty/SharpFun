@@ -4,35 +4,36 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{DFA49133-30FA-45A6-9D98-AA9AC51F2DC8}</ProjectGuid>
+    <ProjectGuid>{18F48A67-0CAD-4503-AD73-54693EF13FEF}</ProjectGuid>
     <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Pagansoft.Functional</RootNamespace>
     <AssemblyName>Pagansoft.Functional</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\$(Configuration)\net40</OutputPath>
     <BaseIntermediateOutputPath>obj</BaseIntermediateOutputPath>
-    <IntermediateOutputPath>$(BaseIntermediateOutputPath)\$(Configuration)\net40</IntermediateOutputPath>
-    <DefineConstants>TRACE;DEBUG;CONTRACTS</DefineConstants>
+    <IntermediateOutputPath>$(BaseIntermediateOutputPath)\$(Configuration)\net35</IntermediateOutputPath>
+    <OutputPath>bin\$(Configuration)\net35</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\$(Configuration)\net40</OutputPath>
+    <OutputPath>bin\$(Configuration)\net35</OutputPath>
     <BaseIntermediateOutputPath>obj</BaseIntermediateOutputPath>
-    <IntermediateOutputPath>$(BaseIntermediateOutputPath)\$(Configuration)\net40</IntermediateOutputPath>
-    <DefineConstants>CONTRACTS</DefineConstants>
+    <IntermediateOutputPath>$(BaseIntermediateOutputPath)\$(Configuration)\net35</IntermediateOutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
-    <DocumentationFile>bin\$(Configuration)\Pagansoft.Functional.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
