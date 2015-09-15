@@ -1,5 +1,6 @@
 # PaganSoft.Functional
 [![Build Status](https://travis-ci.org/magicmonty/SharpFun.svg?branch=master)](https://travis-ci.org/magicmonty/SharpFun)
+[![Build status](https://ci.appveyor.com/api/projects/status/ucl0hr8hg8gj4jwl?svg=true)](https://ci.appveyor.com/project/magicmonty/sharpfun)
 [![NuGet Package](https://img.shields.io/nuget/v/Pagansoft.Functional.svg)](https://www.nuget.org/packages/Pagansoft.Functional/)
 
 A functional datatype library for C#
