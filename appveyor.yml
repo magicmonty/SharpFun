@@ -23,7 +23,7 @@ test:
 deploy:
   - provider: GitHub
     tag: '{APPVEYOR_REPO_TAG_NAME}'
-    release: v{APPVEYOR_REPO_TAG_NAME}
+    release: 'Release {APPVEYOR_REPO_TAG_NAME}'
     auth_token:
       secure: Dx8eB38O4hJW/LQJFYyIvLnIkUtEY0RtcKZqjh4fS2Ij2fnAoI87zK+Iif+uiIAx
     artifact: /.*deploy\\.*\.nupkg/
