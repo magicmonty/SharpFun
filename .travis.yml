@@ -1,6 +1,0 @@
-language: csharp
-solution: PaganSoft.Functional.sln
-install:
-  - "./update.sh"
-script:
-  - "./build.sh"
