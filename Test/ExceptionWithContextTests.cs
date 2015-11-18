@@ -26,7 +26,6 @@
 using NUnit.Framework;
 using Shouldly;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using System;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;

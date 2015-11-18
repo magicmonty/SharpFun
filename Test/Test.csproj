@@ -37,6 +37,7 @@
     <Compile Include="ShouldlyExtensions.cs" />
     <Compile Include="ExceptionWithContextTests.cs" />
     <Compile Include="ResultTests.cs" />
+    <Compile Include="FunctionCompositionExtensionTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

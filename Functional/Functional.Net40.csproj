@@ -51,6 +51,7 @@
     <Compile Include="Either.cs" />
     <Compile Include="Result.cs" />
     <Compile Include="ExceptionWithContext.cs" />
+    <Compile Include="FunctionCompositionExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="signingKey.snk" />
