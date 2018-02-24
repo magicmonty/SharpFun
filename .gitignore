@@ -39,7 +39,6 @@ Thumbs.db
 #dotCover
 *.dotCover
 
-.paket/paket.exe
 .fake/
 deploy/
 
