@@ -1,40 +1,32 @@
-image: Visual Studio 2019
-
 version: 5.0.0.{build}-{branch}
-
+image: Visual Studio 2019
 branches:
   only:
     - master
-
 build_script:
   - ps: .\build.ps1
-
 nuget:
   disable_publish_on_pr: true
-
 artifacts:
   - path: deploy/*.nupkg
     name: Nuget Package
-    type: NugetPackage
-
 test: off
-
 deploy:
   - provider: GitHub
     tag: '{APPVEYOR_REPO_TAG_NAME}'
     release: 'Release {APPVEYOR_REPO_TAG_NAME}'
     auth_token:
       secure: Dx8eB38O4hJW/LQJFYyIvLnIkUtEY0RtcKZqjh4fS2Ij2fnAoI87zK+Iif+uiIAx
-    artifact: /.*deploy\\.*\.nupkg/
+    artifact: deploy/*.nupgk
     on:
       branch: master
-      appveyor_repo_tag: true
+      APPVEYOR_REPO_TAG: true
 
   - provider: NuGet
     api_key:
       secure: 5+5/ePYUVDkfxaM2M41t3tFCau5y8spzxa4Wf0J20RPxLEURWgF7cq3qOEqNz1ik
-    artifact: /.*deploy\\.*\.nupkg/
+    artifact: deploy/*.nupgk
     on:
       branch: master
-      appveyor_repo_tag: true
+      APPVEYOR_REPO_TAG: true
 
