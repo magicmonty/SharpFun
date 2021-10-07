@@ -7,7 +7,7 @@ branches:
     - master
 
 build_script:
-  - ps: .\build.ps1 Pack
+  - ps: .\build.ps1
 
 nuget:
   disable_publish_on_pr: true
