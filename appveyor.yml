@@ -13,19 +13,21 @@ artifacts:
 test: off
 deploy:
   - provider: GitHub
-    tag: '{APPVEYOR_REPO_TAG_NAME}'
-    release: 'Release {APPVEYOR_REPO_TAG_NAME}'
+    tag: '{APPVEYOR_REPO_TAG}'
+    release: 'Release {APPVEYOR_REPO_TAG}'
+    description: 'Release {APPVEYOR_REPO_TAG}'
     auth_token:
-      secure: Dx8eB38O4hJW/LQJFYyIvLnIkUtEY0RtcKZqjh4fS2Ij2fnAoI87zK+Iif+uiIAx
-    artifact: deploy/*.nupgk
+      secure: 9lcqgfNgqSltyjFe2LCuC1ArZ2SGlmf7bZPeyMpXZoLujPaDIkj1z7Gxgrord1Z8
+    artifact: /.*\.nupkg/
     on:
       branch: master
       APPVEYOR_REPO_TAG: true
 
   - provider: NuGet
     api_key:
-      secure: 5+5/ePYUVDkfxaM2M41t3tFCau5y8spzxa4Wf0J20RPxLEURWgF7cq3qOEqNz1ik
-    artifact: deploy/*.nupgk
+      secure: ObGf47lAlW65uQ+k06EPWHW3OYbYPEHanUQMu3/lZc5bIGttfkytXT3FDjsgPqT5
+    skip_symbols: true
+    artifact: /.*\.nupkg/
     on:
       branch: master
       APPVEYOR_REPO_TAG: true
