@@ -1,24 +1,23 @@
+image: Visual Studio 2019
+
 version: 5.0.0.{build}-{branch}
 
 branches:
   only:
     - master
 
-install:
-  - cmd: update.bat
+build_script:
+  - ps: .\build.ps1 Pack
 
 nuget:
   disable_publish_on_pr: true
 
 artifacts:
-  - path: 'deploy\*.nupkg'
+  - path: deploy/*.nupkg
+    name: Nuget Package
+    type: NugetPackage
 
-build_script:
-  - cmd: build.bat Pack
-
-test:
-  assemblies:
-    - Test\bin\Release\net5.0\Test.dll
+test: off
 
 deploy:
   - provider: GitHub
