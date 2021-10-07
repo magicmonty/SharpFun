@@ -23,140 +23,80 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using NUnit.Framework;
+
 using Shouldly;
 using System.Collections.Generic;
 using System;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
+using System.Text;
+using Newtonsoft.Json;
+using Xunit;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Pagansoft.Functional
 {
-    [TestFixture]
     public class ExceptionWithContextTests
     {
-        private Dictionary<string, object> _context;
+        private readonly Dictionary<string, object> _context;
 
-        [SetUp]
-        public void Setup()
+        public ExceptionWithContextTests()
         {
-            _context = new Dictionary<string, object> 
-            { 
+            _context = new Dictionary<string, object>
+            {
                 { "String", "StringValue" },
-                { "Int", 42 } 
+                { "Int", 42 }
             };
         }
 
-        [Test]
-        public void Should_Initialize_Correctly_With_Ctor_Without_Parameters()
-        {
-            var ex = new ExceptionWithContext();
+        [Fact]
+        public void Initializes_correctly_with_ctor_without_parameters() =>
+            new ExceptionWithContext()
+                .ShouldSatisfyAllConditions(
+                    ex => ex.Message.ShouldBeEmpty(),
+                    ex => ex.InnerException.ShouldBe(null));
 
-            ex.Message.ShouldBeEmpty();
-            ex.InnerException.ShouldBe(null);
-        }
+        [Fact]
+        public void Initializes_correctly_with_ctor_with_context_as_parameter() =>
+            new ExceptionWithContext(_context)
+                .ShouldSatisfyAllConditions(
+                    ex => ex.Message.ShouldBeEmpty(),
+                    ex => ex.InnerException.ShouldBe(null));
 
-        [Test]
-        public void Should_Initialize_Correctly_With_Ctor_With_Context_As_Parameter()
-        {
-            var ex = new ExceptionWithContext(_context);
+        [Fact]
+        public void Initializes_correctly_with_ctor_with_message_and_context_as_parameter() =>
+            new ExceptionWithContext("ErrorMessage", _context)
+                .ShouldSatisfyAllConditions(
+                    ex => ex.Message.ShouldBe("ErrorMessage"),
+                    ex => ex.InnerException.ShouldBe(null));
 
-            ex.Message.ShouldBeEmpty();
-            ex.InnerException.ShouldBe(null);
-        }
-
-        [Test]
-        public void Should_Initialize_Correctly_With_Ctor_With_Message_And_Context_As_Parameter()
-        {
-            var ex = new ExceptionWithContext("ErrorMessage", _context);
-
-            ex.Message.ShouldBe("ErrorMessage");
-            ex.InnerException.ShouldBe(null);
-        }
-
-        [Test]
-        public void Should_Initialize_Correctly_With_Ctor_With_Message_InnerException_And_Context_As_Parameter()
+        [Fact]
+        public void Initializes_correctly_with_ctor_with_message_InnerException_and_context_as_parameter()
         {
             var inner = new Exception("BOO");
-            var ex = new ExceptionWithContext("ErrorMessage", inner, _context);
-
-            ex.Message.ShouldBe("ErrorMessage");
-            ex.InnerException.ShouldBeSameAs(inner);
+            new ExceptionWithContext("ErrorMessage", inner, _context)
+                .ShouldSatisfyAllConditions(
+                    ex => ex.Message.ShouldBe("ErrorMessage"),
+                    ex => ex.InnerException.ShouldBeSameAs(inner));
         }
 
-        [Test]
-        public void GetContextValue_Returns_Some_Value_If_Key_And_Type_Match()
-        {
-            var ex = new ExceptionWithContext(_context);
+        [Fact]
+        public void GetContextValue_returns_Some_value_if_key_and_type_match() =>
+            new ExceptionWithContext(_context).ShouldSatisfyAllConditions(
+                ex => ex.GetContextValue<string>("String").ShouldBeSome("StringValue"),
+                ex => ex.GetContextValue<int>("Int").ShouldBeSome(42));
 
-            ex.ShouldSatisfyAllConditions(
-                () => ex.GetContextValue<string>("String").ShouldBeSome("StringValue"),
-                () => ex.GetContextValue<int>("Int").ShouldBeSome(42));
-        }
+        [Fact]
+        public void GetContextValue_returns_None_if_key_is_not_found() =>
+            new ExceptionWithContext(_context)
+                .GetContextValue<string>("FOO")
+                .ShouldBeNone();
 
-        [Test]
-        public void GetContextValue_Returns_None_If_Key_Is_Not_Found()
-        {
-            var ex = new ExceptionWithContext(_context);
-
-            ex.GetContextValue<string>("FOO").ShouldBeNone();
-        }
-
-        [Test]
-        public void GetContextValue_Returns_None_If_Type_Does_Not_Match()
-        {
-            var ex = new ExceptionWithContext(_context);
-
-            ex.ShouldSatisfyAllConditions(
-                () => ex.GetContextValue<int>("String").ShouldBeNone(),
-                () => ex.GetContextValue<string>("Int").ShouldBeNone());
-        }
-
-        [Test]
-        public void Serialization_Works_Correctly()
-        {
-            var inner = new Exception("BOO");
-            var ex = new ExceptionWithContext("ErrorMessage", inner, _context);
-
-            var serialized = Serialize(ex);
-            serialized.Length.ShouldBeGreaterThan(0);
-            var deserialized = Deserialize<ExceptionWithContext>(serialized);
-
-            deserialized.ShouldSatisfyAllConditions(
-                () => deserialized.Message.ShouldBe("ErrorMessage"),
-                () => deserialized.InnerException.Message.ShouldBe("BOO"),
-                () => deserialized.GetContextValue<string>("String").ShouldBeSome("StringValue"),
-                () => deserialized.GetContextValue<int>("Int").ShouldBeSome(42));
-        }
-
-        static byte[] Serialize(object obj)
-        {
-            using (var stream = new MemoryStream())
-            {
-                var formatter = new BinaryFormatter();
-                formatter.Serialize(stream, obj);
-                return stream.GetBuffer();
-            }
-        }
-
-        static T Deserialize<T>(byte[] serialized)
-        {
-            using (var stream = new MemoryStream())
-            {
-                stream.Write(serialized, 0, serialized.Length);
-                stream.Seek(0, SeekOrigin.Begin);
-                var formatter = new BinaryFormatter();
-
-                try
-                {
-                    return (T)formatter.Deserialize(stream);
-                }
-                catch
-                {
-                    return default(T);
-                }
-            }
-        }
+        [Fact]
+        public void GetContextValue_returns_none_if_type_does_not_match() =>
+            new ExceptionWithContext(_context)
+                .ShouldSatisfyAllConditions(
+                    ex => ex.GetContextValue<int>("String").ShouldBeNone(),
+                    ex => ex.GetContextValue<string>("Int").ShouldBeNone());
     }
 }
 

@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <VersionPrefix>5.0.0</VersionPrefix>
+    <Company>Pagansoft</Company>
+    <PackageId>Pagansoft.Functional</PackageId>
+    <Authors>Martin Gondermann</Authors>
+    <PackageProjectUrl>https://github.com/magicmonty/SharpFun</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Copyright>2015-2021 by Martin Gondermann</Copyright>
+    <PackageTags>data type,functional,option,either,result</PackageTags>
+    <Description>Functional Data types for C#</Description>
+  </PropertyGroup>
+</Project>

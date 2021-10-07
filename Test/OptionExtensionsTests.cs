@@ -23,16 +23,16 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using NUnit.Framework;
+
 using System;
 using Shouldly;
+using Xunit;
 
 namespace Pagansoft.Functional
 {
-    [TestFixture]
     public class OptionExtensionsTests
     {
-        [Test]
+        [Fact]
         public void Do_Executes_If_Option_Contains_Value()
         {
             var wasExecuted = string.Empty;
@@ -44,7 +44,7 @@ namespace Pagansoft.Functional
             wasExecuted.ShouldBe("FOO was executed");
         }
 
-        [Test]
+        [Fact]
         public void Do_Does_Not_Execute_If_Option_Contains_No_Value()
         {
             var wasExecuted = string.Empty;
@@ -55,7 +55,7 @@ namespace Pagansoft.Functional
             wasExecuted.ShouldBeEmpty();
         }
 
-        [Test]
+        [Fact]
         public void OtherwiseDo_Executes_If_Option_Contains_No_Value()
         {
             var wasExecuted = false;
@@ -66,7 +66,7 @@ namespace Pagansoft.Functional
             wasExecuted.ShouldBe(true);
         }
 
-        [Test]
+        [Fact]
         public void OtherwiseDo_Does_Not_Execute_If_Option_Contains_Value()
         {
             var wasExecuted = false;
@@ -77,7 +77,7 @@ namespace Pagansoft.Functional
             wasExecuted.ShouldBe(false);
         }
 
-        [Test]
+        [Fact]
         public void Match_With_A_Parametrized_Action_Is_The_Same_As_Do()
         {
             var wasExecuted = string.Empty;
@@ -89,7 +89,7 @@ namespace Pagansoft.Functional
             wasExecuted.ShouldBe("FOO was executed");
         }
 
-        [Test]
+        [Fact]
         public void Match_With_An_Unparametrized_Action_Is_The_Same_As_OtherwiseDo()
         {
             var wasExecuted = string.Empty;
@@ -100,33 +100,33 @@ namespace Pagansoft.Functional
             wasExecuted.ShouldBe("was executed");
         }
 
-        [Test]
+        [Fact]
         public void Match_With_Two_Actions_Is_Same_As_Do_And_Otherwise_Do_Combined_For_None_Option()
         {
             var wasExecuted = string.Empty;
             var option = Option.None<string>();
 
             option.Match(
-                v => wasExecuted = string.Format("{0} was executed", v), 
+                v => wasExecuted = string.Format("{0} was executed", v),
                 () => wasExecuted = "None was executed");
 
             wasExecuted.ShouldBe("None was executed");
         }
 
-        [Test]
+        [Fact]
         public void Match_With_Two_Actions_Is_Same_As_Do_And_Otherwise_Do_Combined_For_Some_Option()
         {
             var wasExecuted = string.Empty;
             var option = Option.Some("FOO");
 
             option.Match(
-                v => wasExecuted = string.Format("{0} was executed", v), 
+                v => wasExecuted = string.Format("{0} was executed", v),
                 () => wasExecuted = "None was executed");
 
             wasExecuted.ShouldBe("FOO was executed");
         }
 
-        [Test]
+        [Fact]
         public void Map_Returns_Some_Transformed_Value_If_Option_Has_Value()
         {
             var option = Option.Some(1);
@@ -134,7 +134,7 @@ namespace Pagansoft.Functional
             option.Map(v => v + "FOO").ShouldBe(Option.Some("1FOO"));
         }
 
-        [Test]
+        [Fact]
         public void Map_Returns_None_If_Option_Has_No_Value()
         {
             var option = Option.None<int>();
@@ -142,54 +142,50 @@ namespace Pagansoft.Functional
             option.Map(v => v + "BAR").ShouldBe(Option.None<string>());
         }
 
-        [Test]
+        [Fact]
         public void Bind_Returns_Some_Transformed_Value_If_Option_Has_Value_And_Transformation_Function_Returns_Some()
         {
             var option = Option.Some(1);
 
-            option.Bind(v => Option.Some("FOO")).ShouldBe(Option.Some("FOO"));
+            option.Bind(_ => Option.Some("FOO")).ShouldBe(Option.Some("FOO"));
         }
 
-        [Test]
+        [Fact]
         public void Bind_Returns_None_If_Option_Has_Value_And_Transformation_Function_Returns_None()
         {
             var option = Option.Some(1);
 
-            option.Bind(v => Option.None<string>()).ShouldBe(Option.None<string>());
+            option.Bind(_ => Option.None<string>()).ShouldBe(Option.None<string>());
         }
 
-        [Test]
+        [Fact]
         public void Bind_Returns_None_If_Option_Has_No_Value()
         {
             var option = Option.None<int>();
 
-            option.Bind(v => Option.Some("FOO")).ShouldBe(Option.None<string>());
+            option.Bind(_ => Option.Some("FOO")).ShouldBe(Option.None<string>());
         }
 
-        [Test]
-        public void AsOption_Returns_None_If_Value_Is_Null()
-        {
-            object value = null;
+        [Fact]
+        public void AsOption_Returns_None_If_Value_Is_Null() =>
+            ((object)null)
+            .AsOption()
+            .ShouldBe(Option.None<object>());
 
-            value.AsOption().ShouldBe(Option.None<object>());
-        }
-
-        [Test]
+        [Fact]
         public void AsOption_Returns_Some_With_Value_If_Value_Is_Not_Null()
         {
             const string value = "FOO";
             value.AsOption().ShouldBe(Option.Some("FOO"));
         }
 
-        [Test]
-        public void AsOption_Returns_None_If_Nullable_Value_Is_Null()
-        {
-            int? value = null;
+        [Fact]
+        public void AsOption_Returns_None_If_Nullable_Value_Is_Null() =>
+            ((int?)null)
+            .AsOption()
+            .ShouldBe(Option.None<int>());
 
-            value.AsOption().ShouldBe(Option.None<int>());
-        }
-
-        [Test]
+        [Fact]
         public void AsOption_Returns_Some_Value_If_Nullable_Value_Is_Not_Null()
         {
             int? value = 10;
@@ -197,7 +193,7 @@ namespace Pagansoft.Functional
             value.AsOption().ShouldBe(Option.Some(10));
         }
 
-        [Test]
+        [Fact]
         public void AsOption_Returns_Some_Value_Is_Value_Type()
         {
             const int value = 10;
@@ -205,79 +201,79 @@ namespace Pagansoft.Functional
             value.AsOption().ShouldBe(Option.Some(10));
         }
 
-        [Test]
+        [Fact]
         public void Where_Returns_Some_For_Option_Some_And_Predicate_True()
         {
             Option.Some(10).Where(v => v == 10).ShouldBe(Option.Some(10));
         }
 
-        [Test]
+        [Fact]
         public void Where_Returns_None_For_Option_Some_And_Predicate_False()
         {
             Option.Some(10).Where(v => v > 10).ShouldBe(Option.None<int>());
         }
 
-        [Test]
+        [Fact]
         public void Where_Returns_None_For_Option_None()
         {
             Option.None<int>().Where(_ => true).ShouldBe(Option.None<int>());
         }
 
-        [Test]
+        [Fact]
         public void If_Returns_Some_For_Option_Some_And_Predicate_True()
         {
             Option.Some(10).If(v => v == 10).ShouldBe(Option.Some(10));
         }
 
-        [Test]
+        [Fact]
         public void If_Returns_None_For_Option_Some_And_Predicate_False()
         {
             Option.Some(10).If(v => v > 10).ShouldBe(Option.None<int>());
         }
 
-        [Test]
+        [Fact]
         public void If_Returns_None_For_Option_None()
         {
             Option.None<int>().If(_ => true).ShouldBe(Option.None<int>());
         }
 
-        [Test]
+        [Fact]
         public void WhereNot_Returns_Some_For_Option_Some_And_Predicate_False()
         {
             Option.Some(5).WhereNot(v => v > 10).ShouldBe(Option.Some(5));
         }
 
-        [Test]
+        [Fact]
         public void WhereNot_Returns_None_For_Option_Some_And_Predicate_True()
         {
             Option.Some(11).WhereNot(v => v > 10).ShouldBe(Option.None<int>());
         }
 
-        [Test]
+        [Fact]
         public void WhereNot_Returns_None_For_Option_None()
         {
             Option.None<int>().WhereNot(_ => true).ShouldBe(Option.None<int>());
         }
 
-        [Test]
+        [Fact]
         public void Unless_Returns_Some_For_Option_Some_And_Predicate_False()
         {
             Option.Some(5).Unless(v => v > 10).ShouldBe(Option.Some(5));
         }
 
-        [Test]
+        [Fact]
         public void Unless_Returns_None_For_Option_Some_And_Predicate_True()
         {
             Option.Some(11).Unless(v => v > 10).ShouldBe(Option.None<int>());
         }
 
-        [Test]
+        [Fact]
         public void Unless_Returns_None_For_Option_None()
         {
             Option.None<int>().Unless(_ => true).ShouldBe(Option.None<int>());
         }
 
-        [Test]
+        [Fact]
         public void TryMap_Returns_None_If_Transformation_Function_Throws_Exception()
         {
             Option.Some(10).TryMap<int, string>(_ => {
@@ -285,45 +281,50 @@ namespace Pagansoft.Functional
             }).ShouldBe(Option.None<string>());
         }
 
-        [Test]
+        [Fact]
         public void TryMap_Returns_Some_If_Transformation_Function_Does_Not_Throw_Exception()
         {
-            Option.Some(10).TryMap<int, string>(_ => "FOO").ShouldBe(Option.Some("FOO"));
+            Option
+                .Some(10)
+                .TryMap(_ => "FOO")
+                .ShouldBe(Option.Some("FOO"));
         }
 
-        [Test]
+        [Fact]
         public void TryBind_Returns_None_If_Transformation_Function_Throws_Exception()
         {
-            Option.Some(10).TryBind<int, string>(_ => {
-                throw new Exception();
-            }).ShouldBe(Option.None<string>());
+            Option
+                .Some(10)
+                .TryBind<int, string>(_ => throw new Exception())
+                .ShouldBe(Option.None<string>());
         }
 
-        [Test]
+        [Fact]
         public void TryBind_Returns_Some_If_Transformation_Function_Does_Not_Throw_Exception()
         {
-            Option.Some(10).TryBind<int, string>(_ => "FOO".AsOption()).ShouldBe(Option.Some("FOO"));
+            Option
+                .Some(10)
+                .TryBind(_ => "FOO".AsOption())
+                .ShouldBe(Option.Some("FOO"));
         }
 
-        [Test]
+        [Fact]
         public void AsOption_With_Predicate_Is_Composed_Of_AsOption_And_Where()
         {
-            var intValue = 10;
+            const int intValue = 10;
             int? nullableIntValue = 10;
-            int? nullableIntValueNull = null;
-            string referenceValue = "FOO";
-            string nullReferenceValue = null;
+            const string referenceValue = "FOO";
 
             intValue.AsOption(v => v == 10).ShouldBe(Option.Some(10));
             intValue.AsOption(v => v != 10).ShouldBe(Option.None<int>());
-            nullableIntValue.AsOption<int>(v => v == 10).ShouldBe(Option.Some<int>(10));
+            nullableIntValue.AsOption<int>(v => v == 10).ShouldBe(Option.Some(10));
             nullableIntValue.AsOption<int>(v => v != 10).ShouldBe(Option.None<int>());
-            nullableIntValueNull.AsOption<int>(_ => true).ShouldBe(Option.None<int>());
-            nullableIntValueNull.AsOption<int>(_ => false).ShouldBe(Option.None<int>());
+            ((int?)null).AsOption<int>(_ => true).ShouldBe(Option.None<int>());
+            ((int?)null).AsOption<int>(_ => false).ShouldBe(Option.None<int>());
             referenceValue.AsOption(_ => true).ShouldBe(Option.Some("FOO"));
             referenceValue.AsOption(_ => false).ShouldBe(Option.None<string>());
-            nullReferenceValue.AsOption(_ => true).ShouldBe(Option.None<string>());
-            nullReferenceValue.AsOption(_ => false).ShouldBe(Option.None<string>());
+            ((string)null).AsOption(_ => true).ShouldBe(Option.None<string>());
+            ((string)null).AsOption(_ => false).ShouldBe(Option.None<string>());
         }
 
     }

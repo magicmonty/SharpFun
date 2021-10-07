@@ -1,13 +1,12 @@
-﻿using NUnit.Framework;
-using System;
+﻿using System;
 using Shouldly;
+using Xunit;
 
 namespace Pagansoft.Functional
 {
-    [TestFixture]
     public class FunctionCompositionExtensionTests
     {
-        [Test]
+        [Fact]
         public void AndThen_Executes_Functions_In_Correct_Order()
         {
             Func<int, int> add1 = x => x + 1;
@@ -17,7 +16,7 @@ namespace Pagansoft.Functional
             add1AndDoubleValue(5).ShouldBe(12);
         }
 
-        [Test]
+        [Fact]
         public void Compose_Executes_Functions_In_Correct_Order()
         {
             Func<int, int> add1 = x => x + 1;
@@ -27,7 +26,7 @@ namespace Pagansoft.Functional
             doubleValueAndAdd1(5).ShouldBe(11);
         }
 
-        [Test]
+        [Fact]
         public void Curry_Allows_Curring_of_Functions()
         {
             Func<int, int, int> adder = (x, y) => x + y;
@@ -40,7 +39,7 @@ namespace Pagansoft.Functional
             add2And5().ShouldBe(7);
         }
 
-        [Test]
+        [Fact]
         public void Curry_With_Two_Parameters()
         {
             Func<int, int, int> adder = (x, y) => x + y;
@@ -49,7 +48,7 @@ namespace Pagansoft.Functional
             add3(1).ShouldBe(4);
         }
 
-        [Test]
+        [Fact]
         public void Curry_With_Three_Parameters()
         {
             Func<int, int, int, int> adder = (x, y, z) => x + y + z;

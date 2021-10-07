@@ -23,16 +23,15 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using NUnit.Framework;
 using Shouldly;
+using Xunit;
 
 namespace Pagansoft.Functional
 {
-    [TestFixture]
     public class EitherTests
     {
-        [Test]
-        public void Two_Eithers_Are_Equal_If_Their_Left_Values_Are_Equal()
+        [Fact]
+        public void Two_Either_are_equal_if_their_left_values_are_equal()
         {
             var value = Either.Left<int, string>(42);
             var otherValue = Either.Left<int, string>(42);
@@ -43,8 +42,8 @@ namespace Pagansoft.Functional
                 () => (value != otherValue).ShouldBe(false, "value != otherValue"));
         }
 
-        [Test]
-        public void Two_Eithers_Are_Equal_If_Their_Right_Values_Are_Equal()
+        [Fact]
+        public void Two_Either_are_equal_if_their_right_values_are_equal()
         {
             var value = Either.Right<int, string>("FOO");
             var otherValue = Either.Right<int, string>("FOO");
@@ -55,8 +54,8 @@ namespace Pagansoft.Functional
                 () => (value != otherValue).ShouldBe(false, "value != otherValue"));
         }
 
-        [Test]
-        public void Two_Eithers_Are_Not_Equal_If_The_Left_Values_Differ()
+        [Fact]
+        public void Two_Either_are_not_equal_if_the_left_values_differ()
         {
             var value = Either.Left<int, string>(42);
             var otherValue = Either.Left<int, string>(1);
@@ -67,8 +66,8 @@ namespace Pagansoft.Functional
                 () => (value != otherValue).ShouldBe(true, "value != otherValue"));
         }
 
-        [Test]
-        public void Two_Eithers_Are_Not_Equal_If_The_One_Is_a_Left_Value_And_One_Is_A_Right_value()
+        [Fact]
+        public void Two_Either_are_not_equal_if_one_is_a_left_value_and_one_is_a_right_value()
         {
             var value = Either.Left<int, string>(42);
             var otherValue = Either.Right<int, string>("FOO");
@@ -79,8 +78,8 @@ namespace Pagansoft.Functional
                 () => (value != otherValue).ShouldBe(true, "value != otherValue"));
         }
 
-        [Test]
-        public void Two_Eithers_Are_Not_Equal_If_The_Right_Values_Differ()
+        [Fact]
+        public void Two_Either_are_not_equal_if_the_right_values_differ()
         {
             var value = Either.Right<int, string>("FOO");
             var otherValue = Either.Right<int, string>("BAR");
@@ -91,139 +90,151 @@ namespace Pagansoft.Functional
                 () => (value != otherValue).ShouldBe(true, "value != otherValue"));
         }
 
-        [Test]
-        public void Two_Eithers_Are_Not_Equal_If_One_Instance_Is_Null()
+        [Fact]
+        public void Two_Either_are_not_equal_if_one_instance_is_null()
         {
             var value = Either.Right<int, string>("FOO");
             Either<int, string> otherValue = null;
 
+            // ReSharper disable ExpressionIsAlwaysNull
             value.ShouldSatisfyAllConditions(
                 () => value.ShouldNotBeStructuralEqual(otherValue),
                 () => (value == otherValue).ShouldBe(false, "value == otherValue"),
                 () => (value != otherValue).ShouldBe(true, "value != otherValue"));
+            // ReSharper restore ExpressionIsAlwaysNull
         }
 
-        [Test]
-        public void Two_Eithers_Are_Equal_If_Both_Instances_Are_Null()
+        [Fact]
+        public void Two_Either_are_equal_if_both_instances_are_null()
         {
             Either<int, string> value = null;
             Either<int, string> otherValue = null;
 
+            // ReSharper disable ExpressionIsAlwaysNull
+            // ReSharper disable ConditionIsAlwaysTrueOrFalse
             value.ShouldSatisfyAllConditions(
                 () => value.ShouldBeStructuralEqual(otherValue),
                 () => (value == otherValue).ShouldBe(true, "value == otherValue"),
                 () => (value != otherValue).ShouldBe(false, "value != otherValue"));
+            // ReSharper restore ConditionIsAlwaysTrueOrFalse
+            // ReSharper restore ExpressionIsAlwaysNull
         }
 
-        [Test]
-        public void ToString_Returns_Either_Value_If_Is_Left_Value()
-        {
+        [Fact]
+        public void ToString_returns_Either_value_if_is_left_value() =>
             Either.Left<int, string>(42).ToString().ShouldBe("42");
-        }
 
-        [Test]
-        public void ToString_Returns_Or_Value_If_Is_Right_Value()
-        {
+        [Fact]
+        public void ToString_returns_Or_value_if_is_right_value() =>
             Either.Right<int, string>("FOO").ToString().ShouldBe("FOO");
-        }
 
-        [Test]
-        public void ToString_Returns_EmptyString_If_Left_Value_Is_Null()
-        {
+        [Fact]
+        public void ToString_returns_EmptyString_if_left_value_is_null() =>
             Either.Left<string, int>(null).ToString().ShouldBeEmpty();
-        }
 
-        [Test]
-        public void ToString_Returns_EmptyString_If_Right_Value_Is_Null()
-        {
+        [Fact]
+        public void ToString_returns_EmptyString_if_right_value_is_null() =>
             Either.Right<int, string>(null).ToString().ShouldBeEmpty();
-        }
 
-        [Test]
-        public void Match_Executes_On_Left_Value_If_Instance_Is_a_Left_Value()
+        [Fact]
+        public void Match_executes_on_left_value_if_instance_is_a_left_value()
         {
             var sut = Either.Left<int, string>(42);
 
             sut.Match(
-                i => i.ShouldBe(42), 
-                _ => Assert.Fail("Function called on or"));
+                i => i.ShouldBe(42),
+                _ => Assert.True(false, "Function called on or"));
         }
 
-        [Test]
-        public void Match_Executes_On_Right_Value_If_Instance_Is_a_Right_Value()
+        [Fact]
+        public void Match_executes_on_right_value_if_instance_is_a_right_value()
         {
             var sut = Either.Right<int, string>("FOO");
 
             sut.Match(
-                _ => Assert.Fail("Function called on either"), 
+                _ => Assert.True(false, "Function called on either"),
                 o => o.ShouldBe("FOO"));
         }
 
-        [Test]
-        public void MatchLeft_Calls_Action_For_Left_Value()
+        [Fact]
+        public void MatchLeft_calls_action_for_left_value()
         {
             var sut = Either.Left<int, string>(42);
-            int actual = 0;
+            var actual = 0;
+
             sut.MatchLeft(i => actual = i);
+
             actual.ShouldBe(42);
         }
 
-        [Test]
-        public void MatchRight_Does_Not_Call_Action_For_Left_Value()
+        [Fact]
+        public void MatchRight_does_not_call_action_for_left_value()
         {
             var sut = Either.Left<int, string>(42);
-            string actual = "";
+            var actual = string.Empty;
+
             sut.MatchRight(o => actual = o);
+
             actual.ShouldBeEmpty();
         }
 
-        [Test]
-        public void MatchRight_Calls_Action_For_Right_Value()
+        [Fact]
+        public void MatchRight_calls_action_for_right_value()
         {
             var sut = Either.Right<int, string>("FOO");
-            string actual = "";
+            var actual = string.Empty;
+
             sut.MatchRight(o => actual = o);
+
             actual.ShouldBe("FOO");
         }
 
-        [Test]
-        public void MatchLeft_Does_Not_Call_Action_For_Right_Value()
+        [Fact]
+        public void MatchLeft_does_not_call_action_for_right_value()
         {
             var sut = Either.Right<int, string>("FOO");
-            int actual = 0;
+            var actual = 0;
+
             sut.MatchLeft(o => actual = o);
+
             actual.ShouldBe(0);
         }
 
-        [Test]
-        public void Case_Returns_The_Correct_Value_On_Left_Value()
+        [Fact]
+        public void Case_returns_the_correct_value_on_left_value()
         {
             var sut = Either.Left<int, string>(42);
 
-            sut.Case(l => "left " + l, r => "right" + r).ShouldBe("left 42");
+            sut.Case(
+                l => "left " + l,
+                r => "right" + r)
+                .ShouldBe("left 42");
         }
 
-        [Test]
-        public void Case_Returns_The_Correct_Value_On_Right_Value()
+        [Fact]
+        public void Case_returns_the_correct_value_on_right_value()
         {
             var sut = Either.Right<int, string>("FOO");
 
-            sut.Case(l => "left " + l, r => "right " + r).ShouldBe("right FOO");
+            sut.Case(
+                l => "left " + l,
+                r => "right " + r)
+                .ShouldBe("right FOO");
         }
 
-        [Test]
-        public void Test_Match_On_Left_With_Same_Types()
+        [Fact]
+        public void Test_match_on_left_with_same_types()
         {
             Either.Left<int, int>(42).Match(
-                i => i.ShouldBe(42), 
-                _ => Assert.Fail("Function called on or"));
+                i => i.ShouldBe(42),
+                _ => Assert.True(false, "Function called on or"));
         }
 
-        [Test]
-        public void Test_Match_On_Right_With_Same_Types()
+        [Fact]
+        public void Test_match_on_right_with_same_types()
         {
             Either.Right<int, int>(42).Match(
-                _ => Assert.Fail("Function called on or"),
+                _ => Assert.True(false, "Function called on or"),
                 i => i.ShouldBe(42));
         }
     }

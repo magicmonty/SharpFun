@@ -23,9 +23,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-#if CONTRACTS
-using System.Diagnostics.Contracts;
-#endif
 
 namespace Pagansoft.Functional
 {
@@ -42,7 +39,7 @@ namespace Pagansoft.Functional
         /// <param name="other">The <see cref="Option{T}"/> to compare with the current <see cref="Option{T}"/>.</param>
         /// <returns><c>true</c> if the specified <see cref="Option{T}"/> is equal to the current
         /// <see cref="Option{T}"/>; otherwise, <c>false</c>.</returns>
-        public abstract bool Equals(Option other);
+        public abstract bool Equals(Option? other);
 
         /// <summary>
         /// Returns the value or.
@@ -57,33 +54,23 @@ namespace Pagansoft.Functional
         /// <param name="obj">The <see cref="System.Object"/> to compare with the current <see cref="Option{T}"/>.</param>
         /// <returns><c>true</c> if the specified <see cref="System.Object"/> is equal to the current
         /// <see cref="Option{T}"/>; otherwise, <c>false</c>.</returns>
-        public override bool Equals(object obj)
-        {
-            return Equals(obj as Option);
-        }
+        public override bool Equals(object? obj) =>
+            Equals(obj as Option);
 
         /// <summary>
         /// Serves as a hash function for a <see cref="Option{T}"/> object.
         /// </summary>
         /// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a
         /// hash table.</returns>
-        public override int GetHashCode()
-        {
-            return 0;
-        }
+        public override int GetHashCode() => 0;
 
         /// <summary>Performs an implicit conversion from <see typeparamref="T"/> to <see cref="Option{T}"/>.</summary>
         /// <param name="value">The value to convert.</param>
         /// <returns>The result of the conversion.</returns>
-        public static implicit operator Option<T>(T value)
-        {
-#if CONTRACTS
-            Contract.Ensures(Contract.Result<Option<T>>() != null);
-#endif
-            return ReferenceEquals(null, value)
+        public static implicit operator Option<T>(T? value) =>
+            value is null
                 ? None<T>()
                 : Some(value);
-        }
     }
 
     /// <summary>Factory class for fluent construction of an option monad</summary>
@@ -95,58 +82,57 @@ namespace Pagansoft.Functional
 
         /// <summary>Gets a value indicating whether this instance represents no value.</summary>
         /// <value><c>true</c> if this instance represents no value; otherwise, <c>false</c>.</value>
-        public bool HasNoValue { get { return !HasValue; } }
+        public bool HasNoValue => !HasValue;
 
         private sealed class OptionSome<TResult> : Option<TResult>
         {
-            public OptionSome(TResult value)
-            {
-                _value = value;
-            }
+            public OptionSome(TResult value) => _value = value;
 
-            public override TResult Value { get { return _value; } }
+            public override TResult Value => _value;
 
             private readonly TResult _value;
 
-            public override bool HasValue { get { return true; } }
+            public override bool HasValue => true;
 
-            public override TResult ReturnValueOr(TResult defaultValue)
+            public override TResult ReturnValueOr(TResult defaultValue) => _value;
+
+            public override bool Equals(Option? other)
             {
-                return _value;
+                if (other is null || other.HasValue != HasValue) { return false; }
+
+                return ReferenceEquals(this, other)
+                       || Equals(_value, other.GetValue<TResult>());
             }
 
-            public override bool Equals(Option other)
-            {
-                if (ReferenceEquals(null, other) || other.HasValue != HasValue)
-                    return false;
+            public override int GetHashCode() =>
+                _value is not null
+                    ? _value.GetHashCode()
+                    : 0;
 
-                return ReferenceEquals(this, other) || Equals(_value, other.GetValue<TResult>());
-            }
-
-            public override int GetHashCode()
-            {
-                return _value != null ? _value.GetHashCode() : 0;
-            }
-
-            public override string ToString()
-            {
-                return _value == null ? string.Empty : _value.ToString();
-            }
+            public override string ToString() =>
+                _value is null
+                    ? string.Empty
+                    : _value.ToString()!;
 
             #region Overrides of Option
 
-            protected override object GetValue<T>()
+            protected override object? GetValue<T>()
             {
                 if (typeof(T) == typeof(TResult))
+                {
                     return _value;
+                }
 
-#if !PORTABLE
                 if (typeof(TResult).IsSubclassOf(typeof(T)))
+                {
                     return _value;
+                }
 
                 if (typeof(T).IsSubclassOf(typeof(TResult)))
+                {
                     return _value;
-#endif
+                }
+
                 return null;
             }
 
@@ -155,60 +141,33 @@ namespace Pagansoft.Functional
 
         private sealed class OptionNone<TResult> : Option<TResult>
         {
-            public override bool HasValue { get { return false; } }
+            public override bool HasValue => false;
 
-            public override TResult Value
-            {
-                get
-                {
-                    throw new ArgumentException("A None Option has no value!");
-                }
-            }
+            public override TResult Value =>
+                throw new ArgumentException("A None Option has no value!");
 
-            public override TResult ReturnValueOr(TResult defaultValue)
-            {
-                return defaultValue;
-            }
+            public override TResult ReturnValueOr(TResult defaultValue) =>
+                defaultValue;
 
-            public override bool Equals(Option other)
-            {
-                return !ReferenceEquals(null, other)
+            public override bool Equals(Option? other) =>
+                other is not null
                 && HasValue == other.HasValue;
-            }
 
-            public override int GetHashCode()
-            {
-                return 0;
-            }
+            public override int GetHashCode() => 0;
 
-            public override string ToString()
-            {
-                return string.Empty;
-            }
+            public override string ToString() => string.Empty;
         }
 
         /// <summary>Creates an option which represents the specified value.</summary>
         /// <param name="value">The value, this option represent.</param>
         /// <typeparam name="T">The type of the represented value.</typeparam>
         /// <returns>An option with a value</returns>
-        public static Option<T> Some<T>(T value)
-        {
-#if CONTRACTS
-            Contract.Ensures(Contract.Result<Option<T>>() != null);
-#endif
-            return new OptionSome<T>(value);
-        }
+        public static Option<T> Some<T>(T value) => new OptionSome<T>(value);
 
         /// <summary>Creates an option which represents no value of a given type.</summary>
         /// <typeparam name="T">The type of the represented value.</typeparam>
         /// <returns>An option without a value</returns>
-        public static Option<T> None<T>()
-        {
-#if CONTRACTS
-            Contract.Ensures(Contract.Result<Option<T>>() != null);
-#endif
-            return new OptionNone<T>();
-        }
+        public static Option<T> None<T>() => new OptionNone<T>();
 
         /// <summary>
         /// Determines whether the specified <see cref="System.Object"/> is equal to the current <see cref="Option{T}"/>.
@@ -216,45 +175,32 @@ namespace Pagansoft.Functional
         /// <param name="obj">The <see cref="System.Object"/> to compare with the current <see cref="Option{T}"/>.</param>
         /// <returns><c>true</c> if the specified <see cref="System.Object"/> is equal to the current
         /// <see cref="Option{T}"/>; otherwise, <c>false</c>.</returns>
-        public override bool Equals(object obj)
-        {
-            return true;
-        }
+        public override bool Equals(object? obj) => true;
 
         /// <summary>
         /// Serves as a hash function for a <see cref="Option{T}"/> object.
         /// </summary>
         /// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a
         /// hash table.</returns>
-        public override int GetHashCode()
-        {
-            return 0;
-        }
+        public override int GetHashCode() => 0;
 
         /// <summary>Implements the operator ==.</summary>
         /// <param name="left">The left value.</param>
         /// <param name="right">The right value.</param>
         /// <returns>The result of the operator.</returns>
-        public static bool operator ==(Option left, Option right)
-        {
-            return Equals(left, right);
-        }
+        public static bool operator ==(Option left, Option right) =>
+            Equals(left, right);
 
         /// <summary>Implements the operator !=.</summary>
         /// <param name="left">The left value.</param>
         /// <param name="right">The right value.</param>
         /// <returns>The result of the operator.</returns>
-        public static bool operator !=(Option left, Option right)
-        {
-            return !(left == right);
-        }
+        public static bool operator !=(Option left, Option right) =>
+            !Equals(left, right);
 
         /// <summary>Gets the value with the given type.</summary>
         /// <typeparam name="T">The expected type</typeparam>
         /// <returns>The value or null, if the type does not match</returns>
-        protected virtual object GetValue<T>()
-        {
-            return null;
-        }
+        protected virtual object? GetValue<T>() => null;
     }
 }

@@ -31,12 +31,10 @@ namespace Pagansoft.Functional
     /// <summary>
     /// Represents an exception with additional context information
     /// </summary>
-#if !PORTABLE
     [Serializable]
-#endif
     public class ExceptionWithContext : Exception
     {
-        private readonly Dictionary<string, object> _context;
+        internal readonly Dictionary<string, object> _context;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Pagansoft.Functional.ExceptionWithContext"/> class.
@@ -47,14 +45,14 @@ namespace Pagansoft.Functional
         /// Initializes a new instance of the <see cref="Pagansoft.Functional.ExceptionWithContext"/> class.
         /// </summary>
         /// <param name="context">The error context.</param>
-        public ExceptionWithContext(Dictionary<string, object> context) : this(string.Empty, context) { }
+        public ExceptionWithContext(Dictionary<string, object>? context) : this(string.Empty, context) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Pagansoft.Functional.ExceptionWithContext"/> class.
         /// </summary>
         /// <param name="message">The message.</param>
         /// <param name="context">The error context.</param>
-        public ExceptionWithContext(string message, Dictionary<string, object> context) : this(message, null, context) { }
+        public ExceptionWithContext(string? message, Dictionary<string, object>? context) : this(message, null, context) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Pagansoft.Functional.ExceptionWithContext"/> class.
@@ -62,20 +60,19 @@ namespace Pagansoft.Functional
         /// <param name="message">The message.</param>
         /// <param name="innerException">The inner exception.</param>
         /// <param name="context">The error context.</param>
-        public ExceptionWithContext(string message, Exception innerException, Dictionary<string, object> context)
+        public ExceptionWithContext(string? message, Exception? innerException, Dictionary<string, object>? context)
             : base(message, innerException)
         {
             _context = context ?? new Dictionary<string, object>();
         }
 
-#if !PORTABLE
         /// <inheritdoc />
         protected ExceptionWithContext(SerializationInfo info, StreamingContext streamingContext)
             : base(info, streamingContext)
         {
-            _context = (Dictionary<string, object>)info.GetValue("Context", typeof(Dictionary<string, object>));
+            _context = (Dictionary<string, object>?)info.GetValue("Context", typeof(Dictionary<string, object>))
+                       ?? new Dictionary<string, object>();
         }
-#endif
 
         /// <summary>Gets a value from the exception context.</summary>
         /// <returns>
@@ -86,8 +83,7 @@ namespace Pagansoft.Functional
         /// <typeparam name="TResult">The expected result type.</typeparam>
         public Option<TResult> GetContextValue<TResult>(string key)
         {
-            if (!_context.ContainsKey(key))
-                return Option.None<TResult>();
+            if (!_context.ContainsKey(key)) { return Option.None<TResult>(); }
 
             try
             {
@@ -99,13 +95,11 @@ namespace Pagansoft.Functional
             }
         }
 
-#if !PORTABLE
         /// <inheritdoc />
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             base.GetObjectData(info, context);
             info.AddValue("Context", _context);
         }
-#endif
     }
 }

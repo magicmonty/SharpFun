@@ -23,49 +23,61 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
+using System.Diagnostics.CodeAnalysis;
 using Shouldly;
 
 namespace Pagansoft.Functional
 {
     public static class ShouldlyExtensions
     {
+        [SuppressMessage("ReSharper", "ExpressionIsAlwaysNull")]
         public static void ShouldBeStructuralEqual<T>(this T value, T otherValue) where T: class
         {
             if (value != null)
+            {
                 value.ShouldSatisfyAllConditions(
                     () => Equals(value, otherValue).ShouldBe(true, "Equals(value, otherValue)"),
                     () => value.Equals(otherValue).ShouldBe(true, "value.Equals(otherValue)"),
                     () => value.ShouldBe(otherValue),
                     () => value.GetHashCode().ShouldBe(otherValue.GetHashCode(), "GetHashCode"));
+            }
             else
+            {
                 value.ShouldSatisfyAllConditions(
                     () => Equals(value, otherValue).ShouldBe(true, "Equals(value, otherValue)"),
                     () => value.ShouldBe(otherValue));
+            }
         }
 
+        [SuppressMessage("ReSharper", "ExpressionIsAlwaysNull")]
         public static void ShouldNotBeStructuralEqual<T>(this T value, T otherValue) where T: class
         {
             if (value != null)
+            {
                 value.ShouldSatisfyAllConditions(
                     () => Equals(value, otherValue).ShouldBe(false, "Equals(value, otherValue)"),
                     () => value.Equals(otherValue).ShouldBe(false, "value.Equals(otherValue)"),
                     () => value.ShouldNotBe(otherValue));
+            }
             else
+            {
                 value.ShouldSatisfyAllConditions(
                     () => Equals(value, otherValue).ShouldBe(false, "Equals(value, otherValue)"),
                     () => value.ShouldNotBe(otherValue));
+            }
         }
 
-        public static void ShouldBeSome<T>(this Option<T> actual, T expected) 
+        public static void ShouldBeSome<T>(this Option<T> actual, T expected)
         {
             actual.ShouldSatisfyAllConditions(
                 () => actual.HasValue.ShouldBe(true),
-                () => actual.Value.ShouldBe(expected)); 
+                () => actual.Value.ShouldBe(expected));
         }
 
-        public static void ShouldBeNone<T>(this Option<T> actual) 
+        public static void ShouldBeNone<T>(this Option<T> actual)
         {
-            actual.HasValue.ShouldBe(false); 
+            actual.HasValue.ShouldBe(false);
         }
     }
 }

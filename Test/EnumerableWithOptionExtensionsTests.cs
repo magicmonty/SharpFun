@@ -23,40 +23,50 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using NUnit.Framework;
+
+using System;
 using Shouldly;
+using Xunit;
 
 namespace Pagansoft.Functional
 {
-    [TestFixture]
     public class EnumerableWithOptionExtensionsTests
     {
-        [Test]
-        public void OptionValues_Is_Empty_If_Enumerable_Is_Empty()
-        {
-            var options = new Option<int>[] { };
+        [Fact]
+        public void OptionValues_is_empty_if_enumerable_is_empty() =>
+            Array.Empty<Option<int>>()
+                .OptionValues()
+                .ShouldBeEmpty();
 
-            options.OptionValues().ShouldBeEmpty();
-        }
-
-        [Test]
-        public void OptionValues_Returns_Only_Values_From_Somes()
+        [Fact]
+        public void OptionValues_returns_only_values_from_SomeValues()
         {
-            var options = new Option<int>[] { Option.Some(10), Option.None<int>(), Option.Some(20) };
+            var options = new[]
+            {
+                Option.Some(10),
+                Option.None<int>(),
+                Option.Some(20)
+            };
 
             options.OptionValues().ShouldBe(new [] { 10, 20 });
         }
 
-        [Test]
-        public void OptionValues_With_Default_Value_Returns_Nones_Replaced_With_Given_Value()
+        [Fact]
+        public void OptionValues_with_default_value_returns_Nones_replaced_with_given_value()
         {
-            var options = new Option<int>[] { Option.Some(10), Option.None<int>(), Option.Some(20) };
+            var options = new[]
+            {
+                Option.Some(10),
+                Option.None<int>(),
+                Option.Some(20)
+            };
 
             options.OptionValues(42).ShouldBe(new [] { 10, 42, 20 });
         }
 
-        [Test]
-        public void OptionValues_On_Null_Returns_Empty_Enumerable()
+        // ReSharper disable ExpressionIsAlwaysNull
+        [Fact]
+        public void OptionValues_on_null_returns_empty_Enumerable()
         {
             Option<int>[] options = null;
 
@@ -64,42 +74,42 @@ namespace Pagansoft.Functional
                 () => options.OptionValues().ShouldBeEmpty(),
                 () => options.OptionValues(42).ShouldBeEmpty());
         }
+        // ReSharper restore ExpressionIsAlwaysNull
 
-        [Test]
-        public void FirstOrNone_Returns_Some_Value_If_Enumerable_Contains_Values()
-        {
-            new[] { 42, 23 }.FirstOrNone().ShouldBe(Option.Some(42));
-        }
+        [Fact]
+        public void FirstOrNone_returns_first_SomeValue_if_enumerable_contains_values() =>
+            new[] { 42, 23 }
+                .FirstOrNone()
+                .ShouldBe(Option.Some(42));
 
-        [Test]
-        public void FirstOrNone_Returns_None_If_Enumerable_Contains_No_Values()
-        {
-            new int[] { }.FirstOrNone().ShouldBe(Option.None<int>());
-        }
+        [Fact]
+        public void FirstOrNone_returns_None_if_enumerable_contains_no_values() =>
+            Array.Empty<int>()
+                .FirstOrNone()
+                .ShouldBe(Option.None<int>());
 
-        [Test]
-        public void FirstOrNone_Returns_None_If_Enumerable_Is_Null()
-        {
-            ((int[])null).FirstOrNone().ShouldBe(Option.None<int>());
-        }
+        [Fact]
+        public void FirstOrNone_returns_none_if_enumerable_is_null() =>
+            ((int[])null)
+            .FirstOrNone()
+            .ShouldBe(Option.None<int>());
 
-        [Test]
-        public void LastOrNone_Returns_Some_Value_If_Enumerable_Contains_Values()
-        {
-            new[] { 42, 23 }.LastOrNone().ShouldBe(Option.Some(23));
-        }
+        [Fact]
+        public void LastOrNone_returns_last_SomeValue_if_enumerable_contains_values() =>
+            new[] { 42, 23 }
+                .LastOrNone()
+                .ShouldBe(Option.Some(23));
 
-        [Test]
-        public void LastOrNone_Returns_None_If_Enumerable_Contains_No_Values()
-        {
-            new int[] { }.LastOrNone().ShouldBe(Option.None<int>());
-        }
+        [Fact]
+        public void LastOrNone_returns_None_if_enumerable_contains_no_values() =>
+            Array.Empty<int>()
+                .LastOrNone()
+                .ShouldBe(Option.None<int>());
 
-        [Test]
-        public void LastOrNone_Returns_None_If_Enumerable_Is_Null()
-        {
-            ((int[])null).LastOrNone().ShouldBe(Option.None<int>());
-        }
+        [Fact]
+        public void LastOrNone_returns_None_if_enumerable_is_null() =>
+            ((int[])null)
+            .LastOrNone()
+            .ShouldBe(Option.None<int>());
     }
 }
-

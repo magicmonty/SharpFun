@@ -25,61 +25,60 @@
 // THE SOFTWARE.
 using System;
 using System.Diagnostics.CodeAnalysis;
-using NUnit.Framework;
 using Shouldly;
+using Xunit;
 
 namespace Pagansoft.Functional
 {
-    [TestFixture]
     [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Test names should be readable")]
     public class OptionTests
     {
-        [Test]
+        [Fact]
         public void HasValue_Is_True_For_Option_Some()
         {
             var sut = Option.Some(1);
             sut.HasValue.ShouldBe(true);
         }
 
-        [Test]
+        [Fact]
         public void HasNoValue_Is_False_For_Option_Some()
         {
             var sut = Option.Some(1);
             sut.HasNoValue.ShouldBe(false);
         }
 
-        [Test]
+        [Fact]
         public void Value_Of_Some_Should_Be_Value_From_Constructor()
         {
             var sut = Option.Some(1);
             sut.Value.ShouldBe(1);
         }
 
-        [Test]
+        [Fact]
         public void HasValue_Is_False_For_Option_None()
         {
             var sut = Option.None<int>();
             sut.HasValue.ShouldBe(false);
         }
 
-        [Test]
+        [Fact]
         public void HasNoValue_Is_True_For_Option_None()
         {
             var sut = Option.None<int>();
             sut.HasNoValue.ShouldBe(true);
         }
 
-        [Test]
+        [Fact]
         public void Value_Of_None_Should_Throw_Exception()
         {
             var sut = Option.None<int>();
             Should.Throw<ArgumentException>(() =>
             {
-                var x = sut.Value;
+                var _ = sut.Value;
             }).Message.ShouldBe("A None Option has no value!");
         }
 
-        [Test]
+        [Fact]
         public void Option_Some_Are_Equal_If_Content_Is_Equal()
         {
             var option1 = Option.Some("FOO");
@@ -92,7 +91,7 @@ namespace Pagansoft.Functional
             option1.GetHashCode().ShouldBe(option2.GetHashCode());
         }
 
-        [Test]
+        [Fact]
         public void Option_Some_Are_Not_Equal_If_Content_Is_Not_Equal()
         {
             var option1 = Option.Some("FOO");
@@ -104,7 +103,7 @@ namespace Pagansoft.Functional
             option1.ShouldNotBe(option2);
         }
 
-        [Test]
+        [Fact]
         public void Option_None_Are_Equal_If_Containing_Type_Is_Same()
         {
             var option1 = Option.None<int>();
@@ -117,17 +116,17 @@ namespace Pagansoft.Functional
             option1.GetHashCode().ShouldBe(option2.GetHashCode());
         }
 
-        [Test]
+        [Fact]
         public void Option_None_And_Option_Some_Are_Not_Equal()
         {
-            var option1 = Option.Some<int>(1);
+            var option1 = Option.Some(1);
             var option2 = Option.None<int>();
 
             option1.ShouldNotBe(option2);
             option2.ShouldNotBe(option1);
         }
 
-        [Test]
+        [Fact]
         public void Implicit_Conversion_Converts_To_A_Some_Option()
         {
             Option<int> actual = 1;
@@ -135,7 +134,7 @@ namespace Pagansoft.Functional
             actual.ShouldBe(Option.Some(1));
         }
 
-        [Test]
+        [Fact]
         public void Implicit_Conversion_Of_Null_Converts_To_A_None_Option()
         {
             Option<string> actual = (string)null;
@@ -143,31 +142,31 @@ namespace Pagansoft.Functional
             actual.ShouldBe(Option.None<string>());
         }
 
-        [Test]
+        [Fact]
         public void ReturnValueOr_Of_A_Some_Returns_Its_Value()
         {
             Option.Some("FOO").ReturnValueOr("BAR").ShouldBe("FOO");
         }
 
-        [Test]
+        [Fact]
         public void ReturnValueOr_Of_A_None_Returns_Its_Value()
         {
             Option.None<string>().ReturnValueOr("BAR").ShouldBe("BAR");
         }
 
-        [Test]
+        [Fact]
         public void ToString_Returns_ToString_Of_Value()
         {
             Option.Some("FOO").ShouldBe("FOO");
         }
 
-        [Test]
+        [Fact]
         public void ToString_Of_None_Returns_EmptyString()
         {
             Option.None<int>().ToString().ShouldBeEmpty();
         }
 
-        [Test]
+        [Fact]
         [SuppressMessage("ReSharper", "EqualExpressionComparison")]
         public void Options_With_Same_Content_Should_Be_Equivalent()
         {
@@ -175,7 +174,7 @@ namespace Pagansoft.Functional
             (Option.Some("FOO") != Option.Some("FOO")).ShouldBe(false);
         }
 
-        [Test]
+        [Fact]
         [SuppressMessage("ReSharper", "EqualExpressionComparison")]
         public void Options_With_Different_Content_Should_Not_Be_Equivalent()
         {
@@ -264,7 +263,7 @@ namespace Pagansoft.Functional
             public DerivedClass(string content) : base(content) { }
         }
 
-        [Test]
+        [Fact]
         public void Options_With_Equal_Derived_Classes_Should_Be_Equal()
         {
             var value = new TestClass("FOO");

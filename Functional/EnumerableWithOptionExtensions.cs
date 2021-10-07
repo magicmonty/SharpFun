@@ -25,9 +25,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-#if CONTRACTS
-using System.Diagnostics.Contracts;
-#endif
 
 namespace Pagansoft.Functional
 {
@@ -43,16 +40,14 @@ namespace Pagansoft.Functional
         /// <returns>The values of all elements with a value.</returns>
         /// <param name="options">The list of options.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
-        public static IEnumerable<T> OptionValues<T>(this IEnumerable<Option<T>> options)
+        public static IEnumerable<T> OptionValues<T>(this IEnumerable<Option<T>>? options)
         {
-#if CONTRACTS
-            Contract.Ensures(Contract.Result<IEnumerable<T>>() != null);
-#endif
-            if (options == null)
-                yield break;
+            if (options is null) { yield break; }
 
             foreach (var option in options.Where(o => o.HasValue))
+            {
                 yield return option.Value;
+            }
         }
 
         /// <summary>
@@ -62,16 +57,14 @@ namespace Pagansoft.Functional
         /// <param name="options">The list of options.</param>
         /// <param name="defaultValue">The default value.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
-        public static IEnumerable<T> OptionValues<T>(this IEnumerable<Option<T>> options, T defaultValue)
+        public static IEnumerable<T> OptionValues<T>(this IEnumerable<Option<T>>? options, T defaultValue)
         {
-#if CONTRACTS
-            Contract.Ensures(Contract.Result<IEnumerable<T>>() != null);
-#endif
-            if (options == null)
-                yield break;
+            if (options is null) { yield break; }
 
             foreach (var option in options)
+            {
                 yield return option.ReturnValueOr(defaultValue);
+            }
         }
 
         /// <summary>
@@ -80,13 +73,9 @@ namespace Pagansoft.Functional
         /// <returns>The first element of the enumeration as option or a <see cref="Option.None{T}"/> if no element exists.</returns>
         /// <param name="enumerable">The enumerable.</param>
         /// <typeparam name="T">The type of the elements of the enumerable.</typeparam>
-        public static Option<T> FirstOrNone<T>(this IEnumerable<T> enumerable)
+        public static Option<T> FirstOrNone<T>(this IEnumerable<T>? enumerable)
         {
-#if CONTRACTS
-            Contract.Ensures(Contract.Result<Option<T>>() != null);
-#endif
-            if (enumerable == null)
-                return Option.None<T>();
+            if (enumerable is null) { return Option.None<T>(); }
 
             try
             {
@@ -104,13 +93,9 @@ namespace Pagansoft.Functional
         /// <returns>The last element of the enumeration as option or a <see cref="Option.None{T}"/> if no element exists.</returns>
         /// <param name="enumerable">The enumerable.</param>
         /// <typeparam name="T">The type of the elements of the enumerable.</typeparam>
-        public static Option<T> LastOrNone<T>(this IEnumerable<T> enumerable)
+        public static Option<T> LastOrNone<T>(this IEnumerable<T>? enumerable)
         {
-#if CONTRACTS
-            Contract.Ensures(Contract.Result<Option<T>>() != null);
-#endif
-            if (enumerable == null)
-                return Option.None<T>();
+            if (enumerable is null) { return Option.None<T>(); }
 
             try
             {

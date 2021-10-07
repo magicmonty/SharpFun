@@ -36,7 +36,7 @@ namespace Pagansoft.Functional
     public abstract class Result<TSuccess> : Either<TSuccess, ExceptionWithContext>
     {
         /// <inheritdoc />
-        public override void Match(Action<TSuccess> onLeft, Action<ExceptionWithContext> onRight)
+        public override void Match(Action<TSuccess?> onLeft, Action<ExceptionWithContext?> onRight)
         {
             MatchSuccess(onLeft);
             MatchFailure(onRight);
@@ -49,7 +49,7 @@ namespace Pagansoft.Functional
         }
 
         /// <inheritdoc />
-        public override void MatchRight(Action<ExceptionWithContext> onRight)
+        public override void MatchRight(Action<ExceptionWithContext?> onRight)
         {
             /* intentionally left blank */
         }
@@ -58,19 +58,15 @@ namespace Pagansoft.Functional
         /// Executes the <paramref name="onSuccess"/> method, if the instance is a Success value.
         /// </summary>
         /// <param name="onSuccess">The action, which is called on success.</param>
-        public void MatchSuccess(Action<TSuccess> onSuccess)
-        {
+        public void MatchSuccess(Action<TSuccess> onSuccess) =>
             MatchLeft(onSuccess);
-        }
 
         /// <summary>
         /// Executes the <paramref name="onFailure"/> method, if the instance is a Failure value.
         /// </summary>
         /// <param name="onFailure">The action, which is called on failure.</param>
-        public void MatchFailure(Action<ExceptionWithContext> onFailure)
-        {
+        public void MatchFailure(Action<ExceptionWithContext?> onFailure) =>
             MatchRight(onFailure);
-        }
     }
 
     /// <summary>
@@ -89,83 +85,58 @@ namespace Pagansoft.Functional
 
             #region implemented abstract members of Either
 
-            public override TResult Case<TResult>(Func<TSuccess, TResult> onLeft, Func<ExceptionWithContext, TResult> onRight)
-            {
-                return onLeft(_value);
-            }
-
-            public override void MatchLeft(Action<TSuccess> onLeft)
-            {
+            public override TResult Case<TResult>(Func<TSuccess, TResult> onLeft, Func<ExceptionWithContext, TResult> onRight) =>
                 onLeft(_value);
-            }
 
-            protected override bool IsLeftValueEqual(Either<TSuccess, ExceptionWithContext> other)
-            {
-                if (ReferenceEquals(null, other))
-                    return false;
+            public override void MatchLeft(Action<TSuccess> onLeft) =>
+                onLeft(_value);
 
-                if (other.GetType() != GetType())
-                    return false;
+            protected override bool IsLeftValueEqual(Either<TSuccess, ExceptionWithContext>? other) =>
+                other is not null
+                && other.GetType() == GetType()
+                && Equals(_value, ((SuccessResult<TSuccess>)other)._value);
 
-                return Equals(_value, ((SuccessResult<TSuccess>)other)._value);
-            }
-
-            protected override bool IsRightValueEqual(Either<TSuccess, ExceptionWithContext> other)
-            {
-                return !ReferenceEquals(null, other) && (other.GetType() == GetType());
-            }
+            protected override bool IsRightValueEqual(Either<TSuccess, ExceptionWithContext>? other) =>
+                other is not null
+                && other.GetType() == GetType();
 
             #endregion
 
-            public override string ToString()
-            {
-                return _value == null ? string.Empty : _value.ToString();
-            }
+            public override string ToString() =>
+                _value is null
+                    ? string.Empty
+                    : _value.ToString() ?? string.Empty;
         }
 
         private sealed class FailureResult<TSuccess> : Result<TSuccess>
         {
-            private readonly ExceptionWithContext _failure;
+            private readonly ExceptionWithContext? _failure;
 
-            public FailureResult(ExceptionWithContext failure)
+            public FailureResult(ExceptionWithContext? failure)
             {
                 _failure = failure;
             }
 
             #region implemented abstract members of Either
 
-            public override TResult Case<TResult>(Func<TSuccess, TResult> onLeft, Func<ExceptionWithContext, TResult> onRight)
-            {
-                return onRight(_failure);
-            }
-
-            public override void MatchRight(Action<ExceptionWithContext> onRight)
-            {
+            public override TResult Case<TResult>(Func<TSuccess?, TResult> onLeft, Func<ExceptionWithContext?, TResult> onRight) =>
                 onRight(_failure);
-            }
 
-            protected override bool IsLeftValueEqual(Either<TSuccess, ExceptionWithContext> other)
-            {
-                return !ReferenceEquals(null, other) && (other.GetType() == GetType());
-            }
+            public override void MatchRight(Action<ExceptionWithContext?> onRight) =>
+                onRight(_failure);
 
-            protected override bool IsRightValueEqual(Either<TSuccess, ExceptionWithContext> other)
-            {
-                if (ReferenceEquals(null, other))
-                    return false;
+            protected override bool IsLeftValueEqual(Either<TSuccess, ExceptionWithContext>? other) =>
+                other is not null
+                && other.GetType() == GetType();
 
-                if (other.GetType() != GetType())
-                    return false;
-
-                return Equals(_failure, ((FailureResult<TSuccess>)other)._failure);
-            }
+            protected override bool IsRightValueEqual(Either<TSuccess, ExceptionWithContext>? other) =>
+                other is not null
+                && other.GetType() == GetType()
+                && Equals(_failure, ((FailureResult<TSuccess>)other)._failure);
 
             #endregion
 
-            public override string ToString()
-            {
-                return _failure == null ? string.Empty : _failure.ToString();
-            }
+            public override string ToString() => _failure?.ToString() ?? string.Empty;
         }
 
         /// <summary>
@@ -174,10 +145,8 @@ namespace Pagansoft.Functional
         /// <param name="value">The success value.</param>
         /// <typeparam name="TSuccess">The type of the success value.</typeparam>
         /// <returns>A new Success Value</returns>
-        public static Result<TSuccess> Success<TSuccess>(TSuccess value)
-        {
-            return new SuccessResult<TSuccess>(value);
-        }
+        public static Result<TSuccess> Success<TSuccess>(TSuccess value) =>
+            new SuccessResult<TSuccess>(value);
 
         /// <summary>
         /// Creates a Failure Result value.
@@ -185,10 +154,8 @@ namespace Pagansoft.Functional
         /// <param name="failure">The failure exception.</param>
         /// <typeparam name="TSuccess">The type of the success value.</typeparam>
         /// <returns>A new Failure Value</returns>
-        public static Result<TSuccess> Failure<TSuccess>(ExceptionWithContext failure)
-        {
-            return new FailureResult<TSuccess>(failure);
-        }
+        public static Result<TSuccess> Failure<TSuccess>(ExceptionWithContext? failure) =>
+            new FailureResult<TSuccess>(failure);
 
         /// <summary>
         /// Creates a Failure Result value.
@@ -196,10 +163,8 @@ namespace Pagansoft.Functional
         /// <param name="failureMessage">The failure message.</param>
         /// <typeparam name="TSuccess">The type of the success value.</typeparam>
         /// <returns>A new Failure Value</returns>
-        public static Result<TSuccess> Failure<TSuccess>(string failureMessage)
-        {
-            return Failure<TSuccess>(new ExceptionWithContext(failureMessage, null));
-        }
+        public static Result<TSuccess> Failure<TSuccess>(string failureMessage) =>
+            Failure<TSuccess>(new ExceptionWithContext(failureMessage, null));
 
         /// <summary>
         /// Creates a Failure Result value.
@@ -208,10 +173,8 @@ namespace Pagansoft.Functional
         /// <param name="context">The context values.</param>
         /// <typeparam name="TSuccess">The type of the success value.</typeparam>
         /// <returns>A new Failure Value</returns>
-        public static Result<TSuccess> Failure<TSuccess>(string failureMessage, Dictionary<string, object> context)
-        {
-            return Failure<TSuccess>(new ExceptionWithContext(failureMessage, context));
-        }
+        public static Result<TSuccess> Failure<TSuccess>(string failureMessage, Dictionary<string, object> context) =>
+            Failure<TSuccess>(new ExceptionWithContext(failureMessage, context));
 
         /// <summary>
         /// Creates a Failure Result value.
@@ -221,9 +184,7 @@ namespace Pagansoft.Functional
         /// <param name="context">The context values.</param>
         /// <typeparam name="TSuccess">The type of the success value.</typeparam>
         /// <returns>A new Failure Value</returns>
-        public static Result<TSuccess> Failure<TSuccess>(string failureMessage, Exception innerException, Dictionary<string, object> context)
-        {
-            return Failure<TSuccess>(new ExceptionWithContext(failureMessage, innerException, context));
-        }
+        public static Result<TSuccess> Failure<TSuccess>(string failureMessage, Exception innerException, Dictionary<string, object> context) =>
+            Failure<TSuccess>(new ExceptionWithContext(failureMessage, innerException, context));
     }
 }
