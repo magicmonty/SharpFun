@@ -1,4 +1,4 @@
-version: 5.0.0.{build}-{branch}
+version: 5.0.1.{build}-{branch}
 image: Visual Studio 2019
 branches:
   only:
@@ -13,9 +13,9 @@ artifacts:
 test: off
 deploy:
   - provider: GitHub
-    tag: '{APPVEYOR_REPO_TAG}'
-    release: 'Release {APPVEYOR_REPO_TAG}'
-    description: 'Release {APPVEYOR_REPO_TAG}'
+    tag: '${APPVEYOR_REPO_TAG_NAME}'
+    release: 'Release ${APPVEYOR_REPO_TAG_NAME}'
+    description: 'Release ${APPVEYOR_REPO_TAG_NAME}'
     auth_token:
       secure: 9lcqgfNgqSltyjFe2LCuC1ArZ2SGlmf7bZPeyMpXZoLujPaDIkj1z7Gxgrord1Z8
     artifact: /.*\.nupkg/
