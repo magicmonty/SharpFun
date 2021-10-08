@@ -49,10 +49,10 @@ namespace Pagansoft.Functional
         public abstract T ReturnValueOr(T defaultValue);
 
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object"/> is equal to the current <see cref="Option{T}"/>.
+        /// Determines whether the specified <see cref="object"/> is equal to the current <see cref="Option{T}"/>.
         /// </summary>
-        /// <param name="obj">The <see cref="System.Object"/> to compare with the current <see cref="Option{T}"/>.</param>
-        /// <returns><c>true</c> if the specified <see cref="System.Object"/> is equal to the current
+        /// <param name="obj">The <see cref="object"/> to compare with the current <see cref="Option{T}"/>.</param>
+        /// <returns><c>true</c> if the specified <see cref="object"/> is equal to the current
         /// <see cref="Option{T}"/>; otherwise, <c>false</c>.</returns>
         public override bool Equals(object? obj) =>
             Equals(obj as Option);
@@ -112,7 +112,7 @@ namespace Pagansoft.Functional
             public override string ToString() =>
                 _value is null
                     ? string.Empty
-                    : _value.ToString()!;
+                    : _value.ToString() ?? string.Empty;
 
             #region Overrides of Option
 
@@ -170,10 +170,10 @@ namespace Pagansoft.Functional
         public static Option<T> None<T>() => new OptionNone<T>();
 
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object"/> is equal to the current <see cref="Option{T}"/>.
+        /// Determines whether the specified <see cref="object"/> is equal to the current <see cref="Option{T}"/>.
         /// </summary>
-        /// <param name="obj">The <see cref="System.Object"/> to compare with the current <see cref="Option{T}"/>.</param>
-        /// <returns><c>true</c> if the specified <see cref="System.Object"/> is equal to the current
+        /// <param name="obj">The <see cref="object"/> to compare with the current <see cref="Option{T}"/>.</param>
+        /// <returns><c>true</c> if the specified <see cref="object"/> is equal to the current
         /// <see cref="Option{T}"/>; otherwise, <c>false</c>.</returns>
         public override bool Equals(object? obj) => true;
 

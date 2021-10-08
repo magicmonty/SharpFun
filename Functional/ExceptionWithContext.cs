@@ -34,28 +34,28 @@ namespace Pagansoft.Functional
     [Serializable]
     public class ExceptionWithContext : Exception
     {
-        internal readonly Dictionary<string, object> _context;
+        private readonly Dictionary<string, object> _context;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Pagansoft.Functional.ExceptionWithContext"/> class.
+        /// Initializes a new instance of the <see cref="ExceptionWithContext"/> class.
         /// </summary>
         public ExceptionWithContext() : this(null) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Pagansoft.Functional.ExceptionWithContext"/> class.
+        /// Initializes a new instance of the <see cref="ExceptionWithContext"/> class.
         /// </summary>
         /// <param name="context">The error context.</param>
         public ExceptionWithContext(Dictionary<string, object>? context) : this(string.Empty, context) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Pagansoft.Functional.ExceptionWithContext"/> class.
+        /// Initializes a new instance of the <see cref="ExceptionWithContext"/> class.
         /// </summary>
         /// <param name="message">The message.</param>
         /// <param name="context">The error context.</param>
         public ExceptionWithContext(string? message, Dictionary<string, object>? context) : this(message, null, context) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Pagansoft.Functional.ExceptionWithContext"/> class.
+        /// Initializes a new instance of the <see cref="ExceptionWithContext"/> class.
         /// </summary>
         /// <param name="message">The message.</param>
         /// <param name="innerException">The inner exception.</param>
@@ -66,7 +66,11 @@ namespace Pagansoft.Functional
             _context = context ?? new Dictionary<string, object>();
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ExceptionWithContext"/> class for serialization
+        /// </summary>
+        /// <param name="info">The <see cref="SerializationInfo"/> that holds the serialized object data about the exception being thrown</param>
+        /// <param name="streamingContext">Contains contextual information about the source or destination</param>
         protected ExceptionWithContext(SerializationInfo info, StreamingContext streamingContext)
             : base(info, streamingContext)
         {
@@ -74,7 +78,9 @@ namespace Pagansoft.Functional
                        ?? new Dictionary<string, object>();
         }
 
-        /// <summary>Gets a value from the exception context.</summary>
+        /// <summary>
+        /// Gets a value from the exception context.
+        /// </summary>
         /// <returns>
         /// An <see cref="Option.Some{T}"/> with the value, if a value of the given <typeparamref name="TResult">type</typeparamref> with the given <paramref name="key"/> was found,
         /// otherwise a <see cref="Option.None{T}"/>.

@@ -2,6 +2,10 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <Nullable>enable</Nullable>
+    <DefaultItemExcludes>$(DefaultItemExcludes);_ReSharper.Caches\**;deploy\**</DefaultItemExcludes>
+    <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)StyleCop.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <RunAnalyzers>true</RunAnalyzers>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -14,5 +18,10 @@
     <Copyright>2015-2021 by Martin Gondermann</Copyright>
     <PackageTags>data type,functional,option,either,result</PackageTags>
     <Description>Functional Data types for C#</Description>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118" PrivateAssets="All"/>
+  </ItemGroup>
 </Project>
