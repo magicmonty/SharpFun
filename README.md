@@ -1,5 +1,5 @@
 # PaganSoft.Functional
-[![Build status](https://ci.appveyor.com/api/projects/status/ucl0hr8hg8gj4jwl?svg=true)](https://ci.appveyor.com/project/magicmonty/sharpfun)
+[![Build status](https://ci.appveyor.com/api/projects/status/rqkb9rtuviobf978?svg=true)](https://ci.appveyor.com/project/magicmonty/sharpfun)
 [![NuGet Package](https://img.shields.io/nuget/v/Pagansoft.Functional.svg)](https://www.nuget.org/packages/Pagansoft.Functional/)
 
 A functional datatype library for C#
@@ -298,7 +298,7 @@ public Option<TResult> GetContextValue<TResult>(string key)
 
 # Building
 - Mac/Linux: `./build.sh`
-- Windows: `build.cmd` (on CMD) or `.\build.ps` (on PowerShell)
+- Windows: `build.cmd` (on CMD) or `.\build.ps1` (on PowerShell)
 
 # Contributing
 ## Unit tests
