@@ -97,10 +97,12 @@ namespace Pagansoft.Functional
             Either<int, string> otherValue = null;
 
             // ReSharper disable ExpressionIsAlwaysNull
+            // ReSharper disable ConditionIsAlwaysTrueOrFalse
             value.ShouldSatisfyAllConditions(
                 () => value.ShouldNotBeStructuralEqual(otherValue),
                 () => (value == otherValue).ShouldBe(false, "value == otherValue"),
                 () => (value != otherValue).ShouldBe(true, "value != otherValue"));
+            // ReSharper restore ConditionIsAlwaysTrueOrFalse
             // ReSharper restore ExpressionIsAlwaysNull
         }
 
@@ -136,6 +138,20 @@ namespace Pagansoft.Functional
         public void ToString_returns_EmptyString_if_right_value_is_null() =>
             Either.Right<int, string>(null).ToString().ShouldBeEmpty();
 
+        [Fact]
+        public void IsLeft_returns_true_and_IsRight_returns_false_if_instance_is_a_left_value() =>
+            Either.Left<int, string>(42)
+                .ShouldSatisfyAllConditions(
+                    e => e.IsLeft.ShouldBeTrue(),
+                    e => e.IsRight.ShouldBeFalse());
+
+        [Fact]
+        public void IsLeft_returns_false_and_IsRight_returns_true_if_instance_is_a_right_value() =>
+            Either.Right<int, string>("42")
+                .ShouldSatisfyAllConditions(
+                    e => e.IsLeft.ShouldBeFalse(),
+                    e => e.IsRight.ShouldBeTrue());
+        
         [Fact]
         public void Match_executes_on_left_value_if_instance_is_a_left_value()
         {

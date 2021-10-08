@@ -5,9 +5,42 @@
 A functional datatype library for C#
 
 The following types are currently provided
+
+## Unit
+
+This class represents a void return value without a functionality.
+
+Usually this return type communicates a side effect. 
+
+### Usage
+
+#### Construction
+
+```csharp
+// The Unit object can only be instantiated by its instance getter;
+return Unit.Instance;
+```
+
+### Example
+
+It can be used for example
+as a return type of the Result type (see below), if one is not interested in the
+result value of a function but rather in the fact, that a function is a success or
+failure.
+
+```csharp
+function Result<Unit> DoSomethingWithSideEffect(string anInput)
+{
+  Console.WriteLine(anInput);
+  return Result.Success(anInput);
+}
+```
+
 ## Option
 
 This is an implementation of the [Option monad](https://en.wikipedia.org/wiki/Option_type).
+
+It represents an optional value. It's internal value is never be null!
 
 ### Usage
 
@@ -210,6 +243,8 @@ Assert.IsEqual(false, value2)
 This is a special `Either` type representing a Result, which can have a success value
 and a failure of type `ExceptionWithContext`
 
+It communicates that the outcome can be either a success (with a value) or a failure.
+
 ### Usage
 
 #### Construction
@@ -230,9 +265,9 @@ var failure3 = Result.Failure<int>("My super awesome message", context);
 var failure4 = Result.Failure<int>("My super awesome message", new Exception("Inner exception"), context);
 ```
 
-#### MatchSuccess / MatchFailure
+#### DoOnSuccess / DoOnFailure
 As the `Result` type is just a specialized `Either` type, all methods on `Either` work also on `Result`.
-For convenience there are two additional aliases `MatchSuccess` and `MatchFailure` which map directly
+For convenience there are two additional aliases `DoOnSuccess` and `DoOnFailure` which map directly
 to `MatchLeft` resp. `MatchRight` on the `Either` type.
 
 
@@ -262,19 +297,9 @@ public Option<TResult> GetContextValue<TResult>(string key)
 ```
 
 # Building
-- First build (gets all dependencies automatically)
-    - Mac/Linux: `./updateAndBuild.sh`
-    - Windows: `updateAndBuild.bat`
-- Build without getting all dependecies:
-    - Mac/Linux: `./build.sh`
-    - Windows: `build.bat`
+- Mac/Linux: `./build.sh`
+- Windows: `build.cmd` (on CMD) or `.\build.ps` (on PowerShell)
 
 # Contributing
-## Visual Studio
-Please don't use NuGet for the Dependencies but Paket.
-There is a Visual Studio plugin for Paket available to manage the dependencies.
-
 ## Unit tests
-Currently all unit tests arw written with NUnit, as Xamarin studio doesn't support MSTest and
-xUnit isn't currently working on Mono.
-If the problems with xUnit are gone, the unit tests will be switched to xUnit.
+Currently all unit tests are written with xUnit.

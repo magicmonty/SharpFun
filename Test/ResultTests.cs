@@ -24,6 +24,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
+using System.Linq;
+using System.Runtime.Serialization;
 using Shouldly;
 using Xunit;
 
@@ -99,10 +102,12 @@ namespace Pagansoft.Functional
             Result<string> otherValue = null;
 
             // ReSharper disable ExpressionIsAlwaysNull
+            // ReSharper disable ConditionIsAlwaysTrueOrFalse
             value.ShouldSatisfyAllConditions(
                 () => value.ShouldNotBeStructuralEqual(otherValue),
                 () => (value == otherValue).ShouldBe(false, "value == otherValue"),
                 () => (value != otherValue).ShouldBe(true, "value != otherValue"));
+            // ReSharper restore ConditionIsAlwaysTrueOrFalse
             // ReSharper restore ExpressionIsAlwaysNull
         }
 
@@ -147,6 +152,20 @@ namespace Pagansoft.Functional
         }
 
         [Fact]
+        public void IsSuccess_returns_true_and_IsFailure_returns_false_if_instance_is_a_success() =>
+            Result.Success(42)
+                .ShouldSatisfyAllConditions(
+                    e => e.IsSuccess.ShouldBeTrue(),
+                    e => e.IsFailure.ShouldBeFalse());
+
+        [Fact]
+        public void IsSuccess_returns_false_and_IsFailure_returns_true_if_instance_is_a_failure() =>
+            Result.Failure<int>("Fehler")
+                .ShouldSatisfyAllConditions(
+                    e => e.IsSuccess.ShouldBeFalse(),
+                    e => e.IsFailure.ShouldBeTrue());
+
+        [Fact]
         public void Match_Executes_On_Success_Value_If_Instance_Is_a_Success()
         {
             var sut = Result.Success(42);
@@ -168,20 +187,20 @@ namespace Pagansoft.Functional
         }
 
         [Fact]
-        public void MatchSuccess_Calls_Action_For_Success()
+        public void DoOnSuccess_Calls_Action_For_Success()
         {
             var sut = Result.Success(42);
             int actual = 0;
-            sut.MatchSuccess(i => actual = i);
+            sut.DoOnSuccess(i => actual = i);
             actual.ShouldBe(42);
         }
 
         [Fact]
-        public void MatchFailure_Does_Not_Call_Action_For_Success()
+        public void DoOnFailure_Does_Not_Call_Action_For_Success()
         {
             var sut = Result.Success(42);
             string actual = "";
-            sut.MatchFailure(o => actual = o.ToString());
+            sut.DoOnFailure(o => actual = o.ToString());
             actual.ShouldBeEmpty();
         }
 
@@ -191,7 +210,7 @@ namespace Pagansoft.Functional
             var ex = new ExceptionWithContext();
             var sut = Result.Failure<int>(ex);
             object actual = null;
-            sut.MatchFailure(o => actual = o);
+            sut.DoOnFailure(o => actual = o);
             actual.ShouldBeSameAs(ex);
         }
 
@@ -219,6 +238,82 @@ namespace Pagansoft.Functional
 
             sut.Case(l => "success " + l, r => "failure " + r).ShouldBe("failure Pagansoft.Functional.ExceptionWithContext: ErrorMessage");
         }
+
+        [Fact]
+        public void Rescue_returns_the_result_of_the_alternate_action_on_failure() =>
+            Result
+                .Failure<int>("Error")
+                .Rescue(_ => Result.Success(42))
+                .Match(
+                    success => success.ShouldBe(42),
+                    _ => Assert.True(false, "Failure condition was triggered"));
+
+        [Fact]
+        public void Rescue_returns_the_result_of_the_original_result_on_success() =>
+            Result
+                .Success(42)
+                .Rescue(_ => Result.Success(666))
+                .Match(
+                    success => success.ShouldBe(42),
+                    _ => Assert.True(false, "Failure condition was triggered"));
+
+        [Fact]
+        public void Test_Linq_comprehension_for_success_case()
+        {
+            var actual =
+                from r1 in Result.Success(42)
+                from r2 in Result.Success(r1.ToString())
+                select r2;
+
+            actual.Match(
+                success => success.ShouldBe("42"),
+                _ => Assert.True(false, "Failure Should not happen"));
+        }
+
+        [Fact]
+        public void Test_Linq_comprehension_for_failure_case()
+        {
+            var actual =
+                from r1 in Result.Success(42)
+                from r2 in Result.Failure<string>("Error")
+                select r2;
+
+            actual.Match(
+                _ => Assert.True(false, "Success Should not happen"),
+                e => e.Message.ShouldBe("Error"));
+        }
+        
+        [Fact]
+        public void Test_Linq_comprehension_for_generic_Exception_case()
+        {
+            var actual =
+                from r1 in Result.Success(42)
+                from r2 in ThrowsGenericException<string>("Error")
+                select r2;
+
+            actual.Match(
+                _ => Assert.True(false, "Success Should not happen"),
+                e => e.Message.ShouldBe("Error"));
+        }
+
+        [Fact]
+        public void Test_Linq_comprehension_for_generic_ExceptionWithContext_case()
+        {
+            var exceptionToThrow = new ExceptionWithContext("Error", null);
+            
+            var actual =
+                from r1 in Result.Success(42)
+                from r2 in ThrowsExceptionWithContext<string>(exceptionToThrow)
+                select r2;
+
+            actual.Match(
+                _ => Assert.True(false, "Success Should not happen"),
+                e => e.ShouldBe(exceptionToThrow));
+        }
+        
+        private static Result<T> ThrowsGenericException<T>(string message) => throw new Exception(message);
+        
+        private static Result<T> ThrowsExceptionWithContext<T>(ExceptionWithContext e) => throw e;
     }
 }
 

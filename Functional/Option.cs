@@ -23,6 +23,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Diagnostics;
+using System.Diagnostics.Contracts;
 
 namespace Pagansoft.Functional
 {
@@ -42,11 +44,47 @@ namespace Pagansoft.Functional
         public abstract bool Equals(Option? other);
 
         /// <summary>
-        /// Returns the value or.
+        /// Returns a function result, depending if the Value is a Some or a None
         /// </summary>
-        /// <returns>The value or.</returns>
+        /// <param name="ifSome">function to call if the value is a Some</param>
+        /// <param name="ifNone">function to call if the value is a None</param>
+        /// <typeparam name="TResult">Type of the result value</typeparam>
+        /// <returns>The result value of the called function</returns>
+        public abstract TResult Match<TResult>(Func<T, TResult> ifSome, Func<TResult> ifNone);
+
+        /// <summary>
+        /// Returns the value or its default
+        /// </summary>
+        /// <returns>The value if its Some, or its default if its None</returns>
+        public T? ReturnValueOrDefault() =>
+            //// ReSharper disable once RedundantTypeSpecificationInDefaultExpression
+            ReturnValueOr(() => default(T));
+
+        /// <summary>
+        /// Returns the value or the default value (if none).
+        /// </summary>
         /// <param name="defaultValue">Default value.</param>
-        public abstract T ReturnValueOr(T defaultValue);
+        /// <returns>The value or the default value (if none).</returns>
+        public abstract T? ReturnValueOr(T? defaultValue);
+
+        /// <summary>
+        /// Returns the value or the default value (if none).
+        /// Lazy evaluated
+        /// </summary>
+        /// <param name="defaultValue">A function, which returns the default value.</param>
+        /// <returns>The value or the default value (if none).</returns>
+        public abstract T? ReturnValueOr(Func<T?> defaultValue);
+
+        /// <summary>
+        /// Determines whether the specified <paramref name="otherValue"/> is equal to the internal value
+        /// </summary>
+        /// <param name="otherValue">The object to compare with the current internal value</param>
+        /// <returns>
+        /// <c>true</c> if the instance is a Some and the internal value equals the <paramref name="otherValue"/>,
+        /// otherwise <c>false</c>
+        /// </returns>
+        [DebuggerStepThrough, Pure]
+        public abstract bool ValueEquals(T? otherValue);
 
         /// <summary>
         /// Determines whether the specified <see cref="object"/> is equal to the current <see cref="Option{T}"/>.
@@ -94,7 +132,16 @@ namespace Pagansoft.Functional
 
             public override bool HasValue => true;
 
-            public override TResult ReturnValueOr(TResult defaultValue) => _value;
+            public override TResult2 Match<TResult2>(Func<TResult, TResult2> ifSome, Func<TResult2> ifNone) =>
+                ifSome(_value);
+
+            public override TResult ReturnValueOr(TResult? defaultValue) => _value;
+
+            public override TResult ReturnValueOr(Func<TResult?> defaultValue) => _value;
+
+            [DebuggerStepThrough, Pure]
+            public override bool ValueEquals(TResult? otherValue) =>
+                Equals(_value, otherValue);
 
             public override bool Equals(Option? other)
             {
@@ -146,8 +193,18 @@ namespace Pagansoft.Functional
             public override TResult Value =>
                 throw new ArgumentException("A None Option has no value!");
 
-            public override TResult ReturnValueOr(TResult defaultValue) =>
+            public override TResult2 Match<TResult2>(Func<TResult, TResult2> ifSome, Func<TResult2> ifNone) =>
+                ifNone();
+
+            public override TResult? ReturnValueOr(TResult? defaultValue) =>
                 defaultValue;
+
+            public override TResult? ReturnValueOr(Func<TResult?> defaultValue) =>
+                defaultValue();
+
+            [DebuggerStepThrough, Pure]
+            public override bool ValueEquals(TResult? otherValue) =>
+                false;
 
             public override bool Equals(Option? other) =>
                 other is not null

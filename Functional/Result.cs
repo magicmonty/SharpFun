@@ -24,6 +24,7 @@
 // THE SOFTWARE.
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Pagansoft.Functional
 {
@@ -35,11 +36,21 @@ namespace Pagansoft.Functional
     /// <typeparam name="TSuccess">The type of the success value</typeparam>
     public abstract class Result<TSuccess> : Either<TSuccess, ExceptionWithContext>
     {
+        /// <summary>
+        /// Convenience helper, which indicates, that the result is a success
+        /// </summary>
+        public bool IsSuccess => IsLeft;
+
+        /// <summary>
+        /// Convenience helper, which indicates, that the result is a failure
+        /// </summary>
+        public bool IsFailure => IsRight;
+
         /// <inheritdoc />
         public override void Match(Action<TSuccess?> onLeft, Action<ExceptionWithContext?> onRight)
         {
-            MatchSuccess(onLeft);
-            MatchFailure(onRight);
+            DoOnSuccess(onLeft);
+            DoOnFailure(onRight);
         }
 
         /// <inheritdoc />
@@ -58,15 +69,139 @@ namespace Pagansoft.Functional
         /// Executes the <paramref name="onSuccess"/> method, if the instance is a Success value.
         /// </summary>
         /// <param name="onSuccess">The action, which is called on success.</param>
-        public void MatchSuccess(Action<TSuccess> onSuccess) =>
+        public void DoOnSuccess(Action<TSuccess> onSuccess) =>
             MatchLeft(onSuccess);
 
         /// <summary>
         /// Executes the <paramref name="onFailure"/> method, if the instance is a Failure value.
         /// </summary>
         /// <param name="onFailure">The action, which is called on failure.</param>
-        public void MatchFailure(Action<ExceptionWithContext?> onFailure) =>
+        public void DoOnFailure(Action<ExceptionWithContext?> onFailure) =>
             MatchRight(onFailure);
+
+        /// <summary>
+        /// If the Result is a failure, try to rescue the execution with an alternate result
+        /// </summary>
+        /// <param name="alternateAction">The function to execute in case of a failure</param>
+        /// <returns>The result itself on success or the result of the alternate action in case of a failure</returns>
+        [DebuggerStepThrough]
+        public Result<TSuccess> Rescue(Func<ExceptionWithContext?, Result<TSuccess>> alternateAction) =>
+            Match(_ => this, alternateAction);
+
+        #region Linq query methods
+
+        /// <summary>
+        /// Projects the success value of a result into a new result of a different type
+        /// </summary>
+        /// <param name="selector">A transform function to apply to the success value</param>
+        /// <typeparam name="TOut">The result type of the <paramref name="selector"/> function</typeparam>
+        /// <returns>The result of the selector function if the result is a success or a failure</returns>
+        [DebuggerStepThrough]
+        public Result<TOut> Select<TOut>(Func<TSuccess, TOut> selector)
+        {
+            try
+            {
+                return Match(
+                    success => Result.Success(selector(success)),
+                    Result.Failure<TOut>);
+            }
+            catch (ExceptionWithContext e)
+            {
+                return Result.Failure<TOut>(e);
+            }
+            catch (Exception e)
+            {
+                return Result.Failure<TOut>(new ExceptionWithContext(e.Message, e, null));
+            }
+        }
+
+        /// <summary>
+        /// Projects the success value of a result into a new result of a different type
+        /// and flattens the result
+        /// </summary>
+        /// <param name="selectorB">A transform function to apply to the success value</param>
+        /// <typeparam name="TResult">The result type of the <paramref name="selectorB"/> function</typeparam>
+        /// <returns>The result of the selector function if the result is a success or a failure</returns>
+        [DebuggerStepThrough]
+        public Result<TResult> SelectMany<TResult>(Func<TSuccess, TResult> selectorB)
+        {
+            try
+            {
+                return Match(
+                    success => Result.Success(selectorB(success)),
+                    Result.Failure<TResult>);
+            }
+            catch (ExceptionWithContext e)
+            {
+                return Result.Failure<TResult>(e);
+            }
+            catch (Exception e)
+            {
+                return Result.Failure<TResult>(new ExceptionWithContext(e.Message, e, null));
+            }
+        }
+
+        /// <summary>
+        /// Projects the success value of a result into a new result of a different type
+        /// and flattens the result
+        /// </summary>
+        /// <param name="selectorB">A transform function to apply to the success value</param>
+        /// <typeparam name="TResult">The result type of the <paramref name="selectorB"/> function</typeparam>
+        /// <returns>The result of the selector function if the result is a success or a failure</returns>
+        [DebuggerStepThrough]
+        public Result<TResult> SelectMany<TResult>(Func<TSuccess, Result<TResult>> selectorB)
+        {
+            try
+            {
+                return Match(
+                    selectorB,
+                    Result.Failure<TResult>);
+            }
+            catch (ExceptionWithContext e)
+            {
+                return Result.Failure<TResult>(e);
+            }
+            catch (Exception e)
+            {
+                return Result.Failure<TResult>(new ExceptionWithContext(e.Message, e, null));
+            }
+        }
+
+        /// <summary>
+        /// Projects the success value of a result into a new result of a different type
+        /// and flattens the result
+        /// </summary>
+        /// <param name="selectorA">A transform function to apply to the success value of the first result</param>
+        /// <param name="selectorB">A transform function to apply to the success value of the result of <paramref name="selectorA"/></param>
+        /// <typeparam name="TProp">The result type of the <paramref name="selectorA"/> function</typeparam>
+        /// <typeparam name="TResult">The result type of the <paramref name="selectorB"/> function</typeparam>
+        /// <returns>The result of the selector function if the result is a success or a failure</returns>
+        [DebuggerStepThrough]
+        public Result<TResult> SelectMany<TProp, TResult>(
+            Func<TSuccess, Result<TProp>> selectorA,
+            Func<TSuccess, TProp, TResult> selectorB)
+        {
+            try
+            {
+                return Match(
+                    success =>
+                        selectorA(success)
+                            .Match(
+                                successA => Result.Success(selectorB(success, successA)),
+                                Result.Failure<TResult>),
+                    Result.Failure<TResult>);
+            }
+            catch (ExceptionWithContext e)
+            {
+                return Result.Failure<TResult>(e);
+            }
+            catch (Exception e)
+            {
+                return Result.Failure<TResult>(new ExceptionWithContext(e.Message, e, null));
+            }
+        }
+
+        #endregion
     }
 
     /// <summary>
@@ -84,6 +219,11 @@ namespace Pagansoft.Functional
             }
 
             #region implemented abstract members of Either
+
+            public override bool IsLeft => true;
+
+            public override TResult Match<TResult>(Func<TSuccess, TResult> onLeft, Func<ExceptionWithContext?, TResult> onRight) =>
+                onLeft(_value);
 
             public override TResult Case<TResult>(Func<TSuccess, TResult> onLeft, Func<ExceptionWithContext, TResult> onRight) =>
                 onLeft(_value);
@@ -119,7 +259,12 @@ namespace Pagansoft.Functional
 
             #region implemented abstract members of Either
 
+            public override bool IsLeft => false;
+
             public override TResult Case<TResult>(Func<TSuccess?, TResult> onLeft, Func<ExceptionWithContext?, TResult> onRight) =>
+                onRight(_failure);
+
+            public override TResult Match<TResult>(Func<TSuccess, TResult> onLeft, Func<ExceptionWithContext?, TResult> onRight) =>
                 onRight(_failure);
 
             public override void MatchRight(Action<ExceptionWithContext?> onRight) =>
